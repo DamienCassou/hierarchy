@@ -1,0 +1,150 @@
+* Hierarchy
+
+** Summary
+
+Library to create, query, navigate and display hierarchy structures.
+
+** Installing
+
+Use [[http://melpa.org/][melpa]].
+
+** Using
+
+After having created a hierarchy with ~hierarchy-new~, populate it by
+calling ~hierarchy-add-tree~ or ~hierarchy-add-relation~.  You can
+then optionally sort its element with ~hierarchy-sort~. For example,
+you can create an animal hierarchy by passing a child-to-parent
+function to ~hierarchy-add-tree~:
+
+#+BEGIN_SRC emacs-lisp :session animals
+  (require 'hierarchy)
+
+  (setq animals (hierarchy-new))
+
+  (let ((parentfn
+         ;; Given an item, return its parent
+         (lambda (item)
+           (cl-case item
+             (dove 'bird)
+             (pigeon 'bird)
+             (bird 'animal)
+             (dolphin 'animal)
+             (cow 'animal)))))
+    (hierarchy-add-tree animals 'dove parentfn)
+    (hierarchy-add-tree animals 'pigeon parentfn)
+    (hierarchy-add-tree animals 'dolphin parentfn)
+    (hierarchy-add-tree animals 'cow parentfn))
+
+  (hierarchy-sort animals)
+#+END_SRC
+
+#+RESULTS:
+| bird | animal |
+
+You can learn more about your hierarchy by using functions such as
+~hierarchy-roots~, ~hierarchy-length~, ~hierarchy-children~,
+~hierarchy-descendant-p~. For example, ~hierarchy-roots~ returns any
+item without a parent in a hierarchy:
+
+#+BEGIN_SRC emacs-lisp :session animals :exports both
+(hierarchy-roots animals)
+#+END_SRC
+
+#+RESULTS:
+| animal |
+
+~animal~ is the only item of the ~animals~ hierarchy with no
+parent. To get all items with no child, use ~hierarchy-leafs~:
+
+#+BEGIN_SRC emacs-lisp :session animals :exports both
+(hierarchy-leafs animals)
+#+END_SRC
+
+#+RESULTS:
+| dove | pigeon | dolphin | cow |
+
+It is possible to get the children of an item by using
+~hierarchy-children~:
+
+#+BEGIN_SRC emacs-lisp :session animals :exports both
+(hierarchy-children animals 'animal)
+#+END_SRC
+
+#+RESULTS:
+| bird | cow | dolphin |
+
+We see here that ~animal~ has three children.
+
+You can navigate a hierarchy using ~hierarchy-map-item~,
+~hierarchy-map~ and ~hierarchy-map-tree~. These functions are used by
+the functions to visualize a hierarchy such as
+~hierarchy-out-text-insert~, ~hierarchy-out-tabulated-display~ and
+~hierarchy-out-tree-convert-to-widget~. For example, this code inserts
+a text view of a hierarchy in a buffer:
+
+#+BEGIN_SRC emacs-lisp :session animals :exports both
+  (require 'hierarchy-out-text)
+
+  (with-temp-buffer
+    (hierarchy-out-text-insert animals
+                               (lambda (animal indent)
+                                 (symbol-name animal)))
+    (buffer-substring (point-min) (point-max)))
+#+END_SRC
+
+#+RESULTS:
+: animal
+:   bird
+:     dove
+:     pigeon
+:   cow
+:   dolphin
+
+The indentation between a parent and its child can be configured by
+passing more parameters to ~hierarchy-out-text-insert~. If you want a
+buffer containing only a hierarchy and be able to navigate it with
+standard key-bindings use either ~hierarchy-out-tabulated-display~,
+~hierarchy-out-tabulated-display-buttons~ or
+~hierarchy-out-tree-convert-to-widget~ as shown in below animated
+pictures.
+
+#+BEGIN_SRC emacs-lisp :session animals :exports code
+  (require 'hierarchy-out-tabulated)
+
+  (switch-to-buffer
+   (hierarchy-out-tabulated-display-buttons
+    animals
+    (lambda (item _) (symbol-name item))
+    (lambda (item _) (message "You clicked on: %s" item))))
+#+END_SRC
+
+#+RESULTS:
+: #<buffer hierarchy-out-tabulated>
+
+[[file:media/animals-tabulated-anime.gif]]
+
+#+BEGIN_SRC emacs-lisp :session animals :exports code
+  (require 'hierarchy-out-tabulated)
+
+  (let ((buffer (generate-new-buffer "hierarchy-animals")))
+    (switch-to-buffer buffer)
+
+    (widget-create
+     (hierarchy-out-tree-convert-to-widget
+      animals
+      (lambda (item _) (symbol-name item))))
+    (setq-local buffer-read-only t))
+#+END_SRC
+
+#+RESULTS:
+: t
+
+[[file:media/animals-tree-anime.gif]]
+
+** Contributing
+
+Yes, please do! See [[file:CONTRIBUTING.md][CONTRIBUTING]] for guidelines.
+
+** License
+
+See [[file:COPYING][COPYING]]. Copyright (c) 2017 Damien Cassou.
