@@ -11,7 +11,7 @@ Use [[http://melpa.org/][melpa]].
 ** Using
 
 After having created a hierarchy with ~hierarchy-new~, populate it by
-calling ~hierarchy-add-tree~ or ~hierarchy-add-relation~.  You can
+calling ~hierarchy-add-tree~ or ~hierarchy-add-trees~.  You can
 then optionally sort its element with ~hierarchy-sort~. For example,
 you can create an animal hierarchy by passing a child-to-parent
 function to ~hierarchy-add-tree~:
