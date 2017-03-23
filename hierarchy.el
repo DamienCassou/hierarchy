@@ -41,16 +41,6 @@
 ;; Current implementation uses #'equal to find and distinguish elements. Support
 ;; for user-provided equality definition is desired but not yet implemented.
 
-;;; Todo:
-
-;; - implement user-provided equality definition
-;;
-;; - test if it's possible to have nil and t as items in the hierarchy
-;;
-;; - add unit-tests for different values of sortfn and acceptfn
-;;
-;; - make sure roots are reset when adding an item
-
 ;;; Code:
 
 (require 'seq)
