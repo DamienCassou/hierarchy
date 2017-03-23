@@ -23,7 +23,7 @@
 ;;; Commentary:
 
 ;; Creation: After having created a hierarchy with `hierarchy-new', populate it by
-;; calling `hierarchy-add-tree' and/or `hierarchy-add-relation'.  You can then optionally sort its
+;; calling `hierarchy-add-tree' or `hierarchy-add-trees'.  You can then optionally sort its
 ;; element with `hierarchy-sort'.
 
 ;; Querying: You can learn more about your hierarchy by using functions such as
@@ -81,16 +81,7 @@ returning non-nil if the first parameter is lower than the second."
         (sort (hierarchy--roots hierarchy)
               sortfn)))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Creation
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun hierarchy-new ()
-  "Create a hierarchy and return it."
-  (hierarchy--make))
-
-(defun hierarchy-add-relation (hierarchy item parent acceptfn)
+(defun hierarchy--add-relation (hierarchy item parent acceptfn)
   "In HIERARCHY, add ITEM as child of PARENT.
 
 ACCEPTFN is a function returning non-nil if its parameter (any object)
@@ -104,6 +95,15 @@ should be an item of the hierarchy."
      ((not has-parent-p)
       (push item (map-elt (hierarchy--children hierarchy) parent (list)))
       (map-put (hierarchy--parents hierarchy) item parent)))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Creation
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun hierarchy-new ()
+  "Create a hierarchy and return it."
+  (hierarchy--make))
 
 (defun hierarchy-add-tree (hierarchy item parentfn &optional childrenfn acceptfn)
   "In HIERARCHY, add ITEM.
@@ -129,12 +129,12 @@ if its parameter is non-nil."
       (hierarchy--seen-items-add hierarchy item)
       (let ((parent (and parentfn (funcall parentfn item))))
         (when (funcall acceptfn parent)
-          (hierarchy-add-relation hierarchy item parent acceptfn)
+          (hierarchy--add-relation hierarchy item parent acceptfn)
           (hierarchy-add-tree hierarchy parent parentfn childrenfn)))
       (let ((children (and childrenfn (funcall childrenfn item))))
         (mapc (lambda (child)
                 (when (funcall acceptfn child)
-                  (hierarchy-add-relation hierarchy child item acceptfn)
+                  (hierarchy--add-relation hierarchy child item acceptfn)
                   (hierarchy-add-tree hierarchy child parentfn childrenfn)))
               children)))))
 
