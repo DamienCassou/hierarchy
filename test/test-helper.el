@@ -23,6 +23,9 @@
 
 ;;; Code:
 
+(when (require 'undercover nil t)
+  (undercover "hierarchy.el"))
+
 (require 'hierarchy)
 
 (defun test-helper-animals ()
