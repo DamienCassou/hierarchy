@@ -1,5 +1,7 @@
 * Hierarchy
 
+[[https://travis-ci.org/DamienCassou/hierarchy.svg?branch%3Dmaster][https://travis-ci.org/DamienCassou/hierarchy.svg?branch=master]]
+
 ** Summary
 
 Library to create, query, navigate and display hierarchy structures.
