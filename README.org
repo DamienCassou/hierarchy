@@ -1,6 +1,7 @@
 * Hierarchy
 
 [[https://travis-ci.org/DamienCassou/hierarchy.svg?branch%3Dmaster][https://travis-ci.org/DamienCassou/hierarchy.svg?branch=master]]
+[[https://coveralls.io/repos/github/DamienCassou/hierarchy/badge.svg?branch%3Dmaster][https://coveralls.io/repos/github/DamienCassou/hierarchy/badge.svg?branch=master]]
 
 ** Summary
 
