@@ -214,38 +214,38 @@
 (ert-deftest hierarchy-map-item-on-leaf ()
   (let* ((animals (test-helper-animals))
          (result (hierarchy-map-item (lambda (item indent) (cons item indent))
-                            'cow
-                            animals)))
+                                     'cow
+                                     animals)))
     (should (equal result '((cow . 0))))))
 
 (ert-deftest hierarchy-map-item-on-leaf-with-indent ()
   (let* ((animals (test-helper-animals))
          (result (hierarchy-map-item (lambda (item indent) (cons item indent))
-                            'cow
-                            animals
-                            2)))
+                                     'cow
+                                     animals
+                                     2)))
     (should (equal result '((cow . 2))))))
 
 (ert-deftest hierarchy-map-item-on-parent ()
   (let* ((animals (test-helper-animals))
          (result (hierarchy-map-item (lambda (item indent) (cons item indent))
-                            'bird
-                            animals)))
+                                     'bird
+                                     animals)))
     (should (equal result '((bird . 0) (dove . 1) (pigeon . 1))))))
 
 (ert-deftest hierarchy-map-item-on-grand-parent ()
   (let* ((animals (test-helper-animals))
          (result (hierarchy-map-item (lambda (item indent) (cons item indent))
-                            'animal
-                            animals)))
+                                     'animal
+                                     animals)))
     (should (equal result '((animal . 0) (bird . 1) (dove . 2) (pigeon . 2)
                             (cow . 1) (dolphin . 1))))))
 
 (ert-deftest hierarchy-map-conses ()
   (let* ((animals (test-helper-animals))
          (result (hierarchy-map (lambda (item indent)
-                         (cons item indent))
-                       animals)))
+                                  (cons item indent))
+                                animals)))
     (should (equal result '((animal . 0)
                             (bird . 1)
                             (dove . 2)
@@ -256,8 +256,8 @@
 (ert-deftest hierarchy-map-tree ()
   (let ((animals (test-helper-animals)))
     (should (equal (hierarchy-map-tree (lambda (item indent children)
-                                (list item indent children))
-                              animals)
+                                         (list item indent children))
+                                       animals)
                    '(animal
                      0
                      ((bird 1 ((dove 2 nil) (pigeon 2 nil)))
