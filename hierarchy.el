@@ -160,6 +160,16 @@ default, SORTFN is `string-lessp'."
              (sort (map-elt (hierarchy--children hierarchy) parent) sortfn)))
           (map-keys (hierarchy--children hierarchy)))))
 
+(defun hierarchy-extract-tree (hierarchy item)
+  "Return a copy of HIERARCHY with ITEM's descendants and parents."
+  (let ((tree (hierarchy-new)))
+    (hierarchy-add-tree tree item
+                        (lambda (each) (hierarchy-parent hierarchy each))
+                        (lambda (each) (when (or (equal each item)
+                                            (hierarchy-descendant-p hierarchy each item))
+                                    (hierarchy-children hierarchy each))))
+    tree))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Querying

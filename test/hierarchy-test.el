@@ -264,6 +264,14 @@
                       (cow 1 nil)
                       (dolphin 1 nil)))))))
 
+(ert-deftest hierarchy-extract-tree ()
+  (let* ((animals (test-helper-animals))
+         (birds (hierarchy-extract-tree animals 'bird)))
+    (hierarchy-sort birds)
+    (should (equal (hierarchy-roots birds) '(animal)))
+    (should (equal (hierarchy-children birds 'animal) '(bird)))
+    (should (equal (hierarchy-children birds 'bird) '(dove pigeon)))))
+
 (provide 'hierarchy-test)
 
 ;;; hierarchy-test.el ends here
