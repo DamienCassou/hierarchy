@@ -25,7 +25,7 @@
 
 (require 'hierarchy)
 
-(define-derived-mode hierarchy-out-tabulated-mode tabulated-list-mode
+(define-derived-mode hierarchy-out-tabulated-mode tabulated-list-mode "Hierarchy tabulated"
   "Major mode to display a hierarchy as a tabulated list.")
 
 (defun hierarchy-out-tabulated-display (hierarchy displayfn &optional buffer)
