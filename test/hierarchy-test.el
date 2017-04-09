@@ -28,6 +28,8 @@
 (require 'ert)
 (require 'hierarchy)
 
+(declare-function test-helper-animals "test-helper")
+
 (ert-deftest hierarchy-add-one-root ()
   (let ((parentfn (lambda (_) nil))
         (hierarchy (hierarchy-new)))
@@ -305,6 +307,112 @@
     (should (equal (hierarchy-roots birds) '(animal)))
     (should (equal (hierarchy-children birds 'animal) '(bird)))
     (should (equal (hierarchy-children birds 'bird) '(dove pigeon)))))
+
+(ert-deftest hierarchy-labelfn-indent-no-indent-if-0 ()
+  (let* ((labelfn-base (lambda (_item _indent) (insert "foo")))
+         (labelfn (hierarchy-labelfn-indent labelfn-base)))
+    (should (equal
+             (with-temp-buffer
+               (funcall labelfn "bar" 0)
+               (buffer-substring (point-min) (point-max)))
+             "foo"))))
+
+(ert-deftest hierarchy-labelfn-indent-three-times-if-3 ()
+  (let* ((labelfn-base (lambda (_item _indent) (insert "foo")))
+         (labelfn (hierarchy-labelfn-indent labelfn-base)))
+    (should (equal
+             (with-temp-buffer
+               (funcall labelfn "bar" 3)
+               (buffer-substring (point-min) (point-max)))
+             "      foo"))))
+
+(ert-deftest hierarchy-labelfn-indent-default-indent-string ()
+  (let* ((labelfn-base (lambda (_item _indent) (insert "foo")))
+         (labelfn (hierarchy-labelfn-indent labelfn-base)))
+    (should (equal
+             (with-temp-buffer
+               (funcall labelfn "bar" 1)
+               (buffer-substring (point-min) (point-max)))
+             "  foo"))))
+
+(ert-deftest hierarchy-labelfn-indent-custom-indent-string ()
+  (let* ((labelfn-base (lambda (_item _indent) (insert "foo")))
+         (labelfn (hierarchy-labelfn-indent labelfn-base "###"))
+         (content (with-temp-buffer
+                    (funcall labelfn "bar" 1)
+                    (buffer-substring (point-min) (point-max)))))
+    (should (equal content "###foo"))))
+
+(ert-deftest hierarchy-labelfn-button-propertize ()
+  (let* ((labelfn-base (lambda (_item _indent) (insert "foo")))
+         (actionfn #'identity)
+         (labelfn (hierarchy-labelfn-button labelfn-base actionfn))
+         (properties (with-temp-buffer
+                       (funcall labelfn "bar" 1)
+                       (text-properties-at 1))))
+    (should (equal (car properties) 'action))))
+
+(ert-deftest hierarchy-labelfn-button-execute-labelfn ()
+  (let* ((labelfn-base (lambda (_item _indent) (insert "foo")))
+         (actionfn #'identity)
+         (labelfn (hierarchy-labelfn-button labelfn-base actionfn))
+         (content (with-temp-buffer
+                    (funcall labelfn "bar" 1)
+                    (buffer-substring-no-properties (point-min) (point-max)))))
+    (should (equal content "foo"))))
+
+(ert-deftest hierarchy-labelfn-button-if-does-not-button-unless-condition ()
+  (let ((labelfn-base (lambda (_item _indent) (insert "foo")))
+        (spy-count 0)
+        (condition (lambda (_item _indent) nil)))
+    (cl-letf (((symbol-function 'hierarchy-labelfn-button) (lambda (_labelfn _actionfn) (lambda (_item _indent) (cl-incf spy-count)))))
+      (funcall (hierarchy-labelfn-button-if labelfn-base condition #'identity) nil nil)
+      (should (equal spy-count 0)))))
+
+(ert-deftest hierarchy-labelfn-button-if-does-button-when-condition ()
+  (let ((labelfn-base (lambda (_item _indent) (insert "foo")))
+        (spy-count 0)
+        (condition (lambda (_item _indent) t)))
+    (cl-letf (((symbol-function 'hierarchy-labelfn-button) (lambda (_labelfn _actionfn) (lambda (_item _indent) (cl-incf spy-count)))))
+      (funcall (hierarchy-labelfn-button-if labelfn-base condition #'identity) nil nil)
+      (should (equal spy-count 1)))))
+
+(ert-deftest hierarchy-labelfn-to-string ()
+  (let ((labelfn (lambda (item _indent) (insert item))))
+    (should (equal (hierarchy-labelfn-to-string labelfn "foo" 1) "foo"))))
+
+(ert-deftest hierarchy-tabulated-display ()
+  (let* ((animals (test-helper-animals))
+         (labelfn (lambda (item _indent) (insert (symbol-name item))))
+         (contents (with-temp-buffer
+                     (hierarchy-tabulated-display animals labelfn (current-buffer))
+                     (buffer-substring-no-properties (point-min) (point-max)))))
+    (should (equal contents "animal\nbird\ndove\npigeon\ncow\ndolphin\n"))))
+
+(require 'wid-edit)
+
+(ert-deftest hierarchy-convert-to-tree-widget ()
+  (let* ((animals (test-helper-animals))
+         (labelfn (lambda (item _indent) (insert (symbol-name item))))
+         (tree-widget (hierarchy-convert-to-tree-widget animals labelfn)))
+    (pcase tree-widget
+      (`(,_
+         :args ((,_
+                 :args ((,_
+                         :args nil
+                         :tag "dove")
+                        (,_
+                         :args nil
+                         :tag "pigeon"))
+                 :tag "bird")
+                (,_
+                 :args nil
+                 :tag "cow")
+                (,_
+                 :args nil
+                 :tag "dolphin"))
+         :tag "animal") t)
+      (otherwise (should-not otherwise)))))
 
 (provide 'hierarchy-test)
 

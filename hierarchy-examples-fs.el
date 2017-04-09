@@ -24,8 +24,6 @@
 ;;; Code:
 
 (require 'hierarchy)
-(require 'hierarchy-out-tabulated)
-(require 'hierarchy-out-tree)
 (require 'f)
 (require 's)
 
@@ -42,15 +40,22 @@
     (hierarchy-sort hierarchy)
     hierarchy))
 
+(defun hierarchy-examples-labelfn (file _)
+  "Insert name of FILE at current position.
+
+_ is ignored."
+  (insert (if (string= file "/")
+              "/"
+            (f-filename file))))
+
 (defun hierarchy-examples-display-filesystem (&optional folder)
   "Display hierarchy of FOLDER in a tabulated list."
   (let* ((hierarchy (hierarchy-examples-build-fs-hierarchy folder))
-         (buffer (hierarchy-out-tabulated-display-buttons
+         (buffer (hierarchy-tabulated-display
                   hierarchy
-                  ;; labelfn: convert a path to a filename
-                  (lambda (item _) (if (string= item "/") "/" (f-filename item)))
-                  ;; actionfn: convert a path to an action
-                  (lambda (item _) (message "%s" item)))))
+                  (hierarchy-labelfn-indent
+                   (hierarchy-labelfn-button
+                    #'hierarchy-examples-labelfn (lambda (item _) (dired item)))))))
     (switch-to-buffer buffer)))
 
 ;; (hierarchy-examples-display-filesystem "~/.emacs.d")
@@ -58,11 +63,9 @@
 (defun hierarchy-examples-display-filesystem-tree (&optional folder)
   "Display hierarchy of FOLDER in a tree widget."
   (let* ((hierarchy (hierarchy-examples-build-fs-hierarchy folder))
-         (tree-widget (hierarchy-out-tree-convert-to-widget
-                       hierarchy
-                       ;; labelfn: convert a path to a filename
-                       (lambda (item _) (if (string= item "/") "/" (f-filename item))))))
-    (with-current-buffer (get-buffer-create "*hierarchy-examples-tree*")
+         (tree-widget (hierarchy-convert-to-tree-widget
+                       hierarchy #'hierarchy-examples-labelfn)))
+    (with-current-buffer (get-buffer-create "*hierarchy-examples-fs-tree*")
       (setq-local buffer-read-only t)
       (let ((inhibit-read-only t))
         (erase-buffer)
@@ -70,7 +73,6 @@
       (switch-to-buffer (current-buffer)))))
 
 ;; (hierarchy-examples-display-filesystem-tree "~/.emacs.d")
-
 
 (provide 'hierarchy-examples-fs)
 ;;; hierarchy-examples-fs.el ends here

@@ -32,9 +32,11 @@
 ;; Navigation: When your hierarchy is ready, you can use `hierarchy-map-item', `hierarchy-map',
 ;; and `map-tree' to apply functions to elements of the hierarchy.
 
-;; Display: You can render your hierarchy using an external library such as
-;; hierarchy-out-text.el (to display as text), hierarchy-out-tabulated (to display as a tabulated
-;; list) and hierarchy-out-tree (to display as a foldable tree widget).
+;; Display: You can display a hierarchy as a tabulated list using
+;; `hierarchy-tabulated-display' and as an expandable/foldable tree
+;; using `hierarchy-convert-to-tree-widget'.  The
+;; `hierarchy-labelfn-*' functions will help you display each item of
+;; the hierarchy the way you want it.
 
 ;;; Limitation:
 
@@ -294,6 +296,94 @@ root if nil)."
              (mapcar (lambda (child)
                        (hierarchy-map-tree function hierarchy child (1+ indent)))
                      (hierarchy-children hierarchy item)))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Display
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun hierarchy-labelfn-indent (labelfn &optional indent-string)
+  "Return a function rendering LABELFN indented with INDENT-STRING.
+
+INDENT-STRING defaults to a 2-space string.  Indentation is
+multiplied by the depth of the displayed item."
+  (let ((indent-string (or indent-string "  ")))
+    (lambda (item indent)
+      (dotimes (_ indent) (insert indent-string))
+      (funcall labelfn item indent))))
+
+(defun hierarchy-labelfn-button (labelfn actionfn)
+  "Return a function rendering LABELFN in a button.
+
+Clicking the button triggers ACTIONFN.  ACTIONFN is a function
+taking an item of HIERARCHY and an indentation value (a number)
+as input.  This function is called when an item is clicked.  The
+return value of ACTIONFN is ignored."
+  (lambda (item indent)
+    (let ((start (point)))
+      (funcall labelfn item indent)
+      (make-text-button start (point)
+                        'action (lambda (_) (funcall actionfn item indent))))))
+
+(defun hierarchy-labelfn-button-if (labelfn buttonp actionfn)
+  "Return a function rendering LABELFN as a button if BUTTONP.
+
+Pass LABELFN and ACTIONFN to `hierarchy-labelfn-button' if
+BUTTONP is non-nil.  Otherwise, render LABELFN without making it
+a button.
+
+BUTTONP is a function taking an item of HIERARCHY and an
+indentation value (a number) as input."
+  (lambda (item indent)
+    (if (funcall buttonp item indent)
+        (funcall (hierarchy-labelfn-button labelfn actionfn) item indent)
+      (funcall labelfn item indent))))
+
+(defun hierarchy-labelfn-to-string (labelfn item indent)
+  "Execute LABELFN on ITEM and INDENT.  Return result as a string."
+  (with-temp-buffer
+    (funcall labelfn item indent)
+    (buffer-substring (point-min) (point-max))))
+
+(define-derived-mode hierarchy-tabulated-mode tabulated-list-mode "Hierarchy tabulated"
+  "Major mode to display a hierarchy as a tabulated list.")
+
+(defun hierarchy-tabulated-display (hierarchy labelfn &optional buffer)
+  "Display HIERARCHY as a tabulated list in `hierarchy-tabulated-mode'.
+
+LABELFN is a function taking an item of HIERARCHY and an indentation
+level (a number) as input and inserting a string to be displayed in the
+table.
+
+The tabulated list is displayed in BUFFER, or a newly created buffer if
+nil.  The buffer is returned."
+  (let ((buffer (or buffer (generate-new-buffer "hierarchy-tabulated"))))
+    (with-current-buffer buffer
+      (hierarchy-tabulated-mode)
+      (setq tabulated-list-format
+            (vector '("Item name" 0 nil)))
+      (setq tabulated-list-entries
+            (hierarchy-map (lambda (item indent)
+                             (list item (vector (hierarchy-labelfn-to-string labelfn item indent))))
+                           hierarchy))
+      (tabulated-list-init-header)
+      (tabulated-list-print))
+    buffer))
+
+(declare-function widget-convert "wid-edit")
+(defun hierarchy-convert-to-tree-widget (hierarchy labelfn)
+  "Return a tree-widget for HIERARCHY.
+
+LABELFN is a function taking an item of HIERARCHY and an indentation
+value (a number) as parameter and returning a string to be displayed as a
+button label."
+  (require 'wid-edit)
+  (hierarchy-map-tree (lambda (item indent children)
+                        (widget-convert
+                         'tree-widget
+                         :tag (hierarchy-labelfn-to-string labelfn item indent)
+                         :args children))
+                      hierarchy))
 
 (provide 'hierarchy)
 
