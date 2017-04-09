@@ -158,6 +158,40 @@
     (should (equal (hierarchy-children hierarchy 'animal) '(bird)))
     (should (equal (hierarchy-children hierarchy 'bird) '(pigeon dove)))))
 
+(ert-deftest hierarchy-add-relation-check-error-when-different-parent ()
+  (let ((parentfn (lambda (item) (cl-case item
+                              (bird 'animal))))
+        (hierarchy (hierarchy-new)))
+    (hierarchy-add-tree hierarchy 'bird parentfn)
+    (should-error
+     (hierarchy--add-relation hierarchy 'bird 'cow #'identity))))
+
+(ert-deftest hierarchy-length-of-empty-is-0 ()
+  (should (equal (hierarchy-length (hierarchy-new)) 0)))
+
+(ert-deftest hierarchy-length-of-non-empty-counts-items ()
+  (let ((parentfn (lambda (item) (cl-case item
+                              (bird 'animal)
+                              (dove 'bird)
+                              (pigeon 'bird))))
+        (hierarchy (hierarchy-new)))
+    (hierarchy-add-tree hierarchy 'dove parentfn)
+    (hierarchy-add-tree hierarchy 'pigeon parentfn)
+    (should (equal (hierarchy-length hierarchy) 4))))
+
+(ert-deftest hierarchy-has-root ()
+  (let ((parentfn (lambda (item) (cl-case item
+                              (bird 'animal)
+                              (dove 'bird)
+                              (pigeon 'bird))))
+        (hierarchy (hierarchy-new)))
+    (should-not (hierarchy-has-root hierarchy 'animal))
+    (should-not (hierarchy-has-root hierarchy 'bird))
+    (hierarchy-add-tree hierarchy 'dove parentfn)
+    (hierarchy-add-tree hierarchy 'pigeon parentfn)
+    (should (hierarchy-has-root hierarchy 'animal))
+    (should-not (hierarchy-has-root hierarchy 'bird))))
+
 (ert-deftest hierarchy-leafs ()
   (let ((animals (test-helper-animals)))
     (should (equal (hierarchy-leafs animals)
