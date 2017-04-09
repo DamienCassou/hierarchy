@@ -295,6 +295,54 @@ root if nil)."
                        (hierarchy-map-tree function hierarchy child (1+ indent)))
                      (hierarchy-children hierarchy item)))))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Display
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun hierarchy-labelfn-indent (labelfn &optional indent-string)
+  "Return a function rendering LABELFN indented with INDENT-STRING.
+
+INDENT-STRING defaults to a 2-space string.  Indentation is
+multiplied by the depth of the displayed item."
+  (let ((indent-string (or indent-string "  ")))
+    (lambda (item indent)
+      (dotimes (_ indent) (insert indent-string))
+      (funcall labelfn item indent))))
+
+(defun hierarchy-labelfn-button (labelfn actionfn)
+  "Return a function rendering LABELFN in a button.
+
+Clicking the button triggers ACTIONFN.  ACTIONFN is a function
+taking an item of HIERARCHY and an indentation value (a number)
+as input.  This function is called when an item is clicked.  The
+return value of ACTIONFN is ignored."
+  (lambda (item indent)
+    (let ((start (point)))
+      (funcall labelfn item indent)
+      (make-text-button start (point)
+                        'action (lambda (_) (funcall actionfn item indent))))))
+
+(defun hierarchy-labelfn-button-if (labelfn buttonp actionfn)
+  "Return a function rendering LABELFN as a button if BUTTONP.
+
+Pass LABELFN and ACTIONFN to `hierarchy-labelfn-button' if
+BUTTONP is non-nil.  Otherwise, render LABELFN without making it
+a button.
+
+BUTTONP is a function taking an item of HIERARCHY and an
+indentation value (a number) as input."
+  (lambda (item indent)
+    (if (funcall buttonp item indent)
+        (funcall (hierarchy-labelfn-button labelfn actionfn) item indent)
+      (funcall labelfn item indent))))
+
+(defun hierarchy-labelfn-to-string (labelfn item indent)
+  "Execute LABELFN on ITEM and INDENT.  Return result as a string."
+  (with-temp-buffer
+    (funcall labelfn item indent)
+    (buffer-substring (point-min) (point-max))))
+
 (provide 'hierarchy)
 
 ;;; hierarchy.el ends here
