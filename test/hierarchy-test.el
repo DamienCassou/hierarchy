@@ -28,6 +28,8 @@
 (require 'ert)
 (require 'hierarchy)
 
+(declare-function test-helper-animals "test-helper")
+
 (ert-deftest hierarchy-add-one-root ()
   (let ((parentfn (lambda (_) nil))
         (hierarchy (hierarchy-new)))
