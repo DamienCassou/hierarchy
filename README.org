@@ -79,19 +79,15 @@ It is possible to get the children of an item by using
 We see here that ~animal~ has three children.
 
 You can navigate a hierarchy using ~hierarchy-map-item~,
-~hierarchy-map~ and ~hierarchy-map-tree~. These functions are used by
-the functions to visualize a hierarchy such as
-~hierarchy-out-text-insert~, ~hierarchy-out-tabulated-display~ and
-~hierarchy-out-tree-convert-to-widget~. For example, this code inserts
-a text view of a hierarchy in a buffer:
+~hierarchy-map~ and ~hierarchy-map-tree~. For example, this code
+inserts a text view of a hierarchy in a buffer:
 
 #+BEGIN_SRC emacs-lisp :session animals :exports both
-  (require 'hierarchy-out-text)
-
   (with-temp-buffer
-    (hierarchy-out-text-insert animals
-                               (lambda (animal indent)
-                                 (symbol-name animal)))
+    (hierarchy-map
+     (hierarchy-labelfn-indent
+      (lambda (animal _) (insert (symbol-name animal) "\n")))
+     animals)
     (buffer-substring (point-min) (point-max)))
 #+END_SRC
 
@@ -104,38 +100,37 @@ a text view of a hierarchy in a buffer:
 :   dolphin
 
 The indentation between a parent and its child can be configured by
-passing more parameters to ~hierarchy-out-text-insert~. If you want a
-buffer containing only a hierarchy and be able to navigate it with
-standard key-bindings use either ~hierarchy-out-tabulated-display~,
-~hierarchy-out-tabulated-display-buttons~ or
-~hierarchy-out-tree-convert-to-widget~ as shown in below animated
-pictures.
+passing one more parameter to ~hierarchy-labelfn-indent~. You can also
+display clickable buttons instead of just plain text using either
+~hierarchy-labelfn-button~ or ~hierarchy-labelfn-button-if~.
+
+If you want a buffer containing only a hierarchy while being able to
+navigate it with standard key-bindings use either
+~hierarchy-tabulated-display~ or ~hierarchy-convert-to-tree-widget~ as
+shown in below animated pictures.
 
 #+BEGIN_SRC emacs-lisp :session animals :exports code
-  (require 'hierarchy-out-tabulated)
-
   (switch-to-buffer
-   (hierarchy-out-tabulated-display-buttons
+   (hierarchy-tabulated-display
     animals
-    (lambda (item _) (symbol-name item))
-    (lambda (item _) (message "You clicked on: %s" item))))
+    (hierarchy-labelfn-indent
+     (hierarchy-labelfn-button
+      (lambda (item _) (insert (symbol-name item)))
+      (lambda (item _) (message "You clicked on: %s" item))))))
 #+END_SRC
 
 #+RESULTS:
-: #<buffer hierarchy-out-tabulated>
+: #<buffer hierarchy-tabulated<2>>
 
 [[file:media/animals-tabulated-anime.gif]]
 
 #+BEGIN_SRC emacs-lisp :session animals :exports code
-  (require 'hierarchy-out-tabulated)
-
   (let ((buffer (generate-new-buffer "hierarchy-animals")))
     (switch-to-buffer buffer)
-
     (widget-create
-     (hierarchy-out-tree-convert-to-widget
+     (hierarchy-convert-to-tree-widget
       animals
-      (lambda (item _) (symbol-name item))))
+      (lambda (item _) (insert (symbol-name item)))))
     (setq-local buffer-read-only t))
 #+END_SRC
 
