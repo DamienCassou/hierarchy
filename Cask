@@ -10,4 +10,5 @@
  (depends-on "f")
  (depends-on "ert-runner")
  (depends-on "cask-package-toolset")
- (depends-on "undercover"))
+ (depends-on "undercover")
+ (depends-on "package-lint"))
