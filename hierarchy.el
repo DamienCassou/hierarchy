@@ -345,8 +345,19 @@ indentation value (a number) as input."
     (funcall labelfn item indent)
     (buffer-substring (point-min) (point-max))))
 
+(defun hierarchy-tabulated-imenu-action (_item-name position)
+  "Move to ITEM-NAME at POSITION in current buffer."
+  (goto-char position)
+  (back-to-indentation))
+
 (define-derived-mode hierarchy-tabulated-mode tabulated-list-mode "Hierarchy tabulated"
-  "Major mode to display a hierarchy as a tabulated list.")
+  "Major mode to display a hierarchy as a tabulated list."
+  (setq-local imenu-generic-expression
+              ;; debbugs: 26457 - Cannot pass a function to
+              ;; imenu-generic-expression.  Add
+              ;; `hierarchy-tabulated-imenu-action' to the end of the
+              ;; list when bug is fixed
+              '(("Item" "^[[:space:]]+\\(?1:.+\\)$" 1))))
 
 (defun hierarchy-tabulated-display (hierarchy labelfn &optional buffer)
   "Display HIERARCHY as a tabulated list in `hierarchy-tabulated-mode'.
