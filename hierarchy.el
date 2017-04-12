@@ -5,6 +5,8 @@
 ;; Author: Damien Cassou <damien@cassou.me>
 ;; Version: 0.1.0
 ;; Package-Requires: ((emacs "25.1"))
+;; GIT: https://github.com/DamienCassou/hierarchy
+;;
 ;; This file is not part of GNU Emacs.
 
 ;; This program is free software: you can redistribute it and/or modify
