@@ -1,8 +1,10 @@
-;;; hierarchy-examples.el --- Some example hierarchies  -*- lexical-binding: t; -*-
+;;; hierarchy-examples-fs.el --- Some example hierarchies  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017  Damien Cassou
 
 ;; Author: Damien Cassou <damien@cassou.me>
+;; Version: 0.1.0
+;; Package-Requires: ((emacs "25.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -27,7 +29,7 @@
 (require 'f)
 (require 's)
 
-(defun hierarchy-examples-build-fs-hierarchy (folder)
+(defun hierarchy-examples-fs-build-fs-hierarchy (folder)
   "Return hierarchy of FOLDER."
   (let* ((folder (f-expand folder))
          (parentfn (lambda (file) (f-parent file)))
@@ -40,7 +42,7 @@
     (hierarchy-sort hierarchy)
     hierarchy))
 
-(defun hierarchy-examples-labelfn (file _)
+(defun hierarchy-examples-fs-labelfn (file _)
   "Insert name of FILE at current position.
 
 _ is ignored."
@@ -48,23 +50,23 @@ _ is ignored."
               "/"
             (f-filename file))))
 
-(defun hierarchy-examples-display-filesystem (&optional folder)
+(defun hierarchy-examples-fs-display-filesystem (&optional folder)
   "Display hierarchy of FOLDER in a tabulated list."
-  (let* ((hierarchy (hierarchy-examples-build-fs-hierarchy folder))
+  (let* ((hierarchy (hierarchy-examples-fs-build-fs-hierarchy folder))
          (buffer (hierarchy-tabulated-display
                   hierarchy
                   (hierarchy-labelfn-indent
                    (hierarchy-labelfn-button
-                    #'hierarchy-examples-labelfn (lambda (item _) (dired item)))))))
+                    #'hierarchy-examples-fs-labelfn (lambda (item _) (dired item)))))))
     (switch-to-buffer buffer)))
 
-;; (hierarchy-examples-display-filesystem "~/.emacs.d")
+;; (hierarchy-examples-fs-display-filesystem "~/.emacs.d")
 
-(defun hierarchy-examples-display-filesystem-tree (&optional folder)
+(defun hierarchy-examples-fs-display-filesystem-tree (&optional folder)
   "Display hierarchy of FOLDER in a tree widget."
-  (let* ((hierarchy (hierarchy-examples-build-fs-hierarchy folder))
+  (let* ((hierarchy (hierarchy-examples-fs-build-fs-hierarchy folder))
          (tree-widget (hierarchy-convert-to-tree-widget
-                       hierarchy #'hierarchy-examples-labelfn)))
+                       hierarchy #'hierarchy-examples-fs-labelfn)))
     (with-current-buffer (get-buffer-create "*hierarchy-examples-fs-tree*")
       (setq-local buffer-read-only t)
       (let ((inhibit-read-only t))
@@ -72,7 +74,7 @@ _ is ignored."
         (widget-create tree-widget))
       (switch-to-buffer (current-buffer)))))
 
-;; (hierarchy-examples-display-filesystem-tree "~/.emacs.d")
+;; (hierarchy-examples-fs-display-filesystem-tree "~/.emacs.d")
 
 (provide 'hierarchy-examples-fs)
 ;;; hierarchy-examples-fs.el ends here

@@ -1,10 +1,10 @@
-;;; hierarchy.el --- Library to create, query, navigate and display hierarchy structures  -*- lexical-binding: t; -*-
+;;; hierarchy.el --- Library to create and display hierarchy structures  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017 Damien Cassou
 
 ;; Author: Damien Cassou <damien@cassou.me>
 ;; Version: 0.1.0
-
+;; Package-Requires: ((emacs "25.1"))
 ;; This file is not part of GNU Emacs.
 
 ;; This program is free software: you can redistribute it and/or modify
