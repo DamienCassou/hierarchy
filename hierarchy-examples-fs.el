@@ -26,29 +26,41 @@
 ;;; Code:
 
 (require 'hierarchy)
-(require 'f)
-(require 's)
+
+(defun hierarchy-examples-fs-directory-p (file)
+  "Return non-nil if FILE is a directory and not . or ..."
+  (and (not (string-suffix-p "/." file))
+       (not (string-suffix-p "/.." file))
+       (file-directory-p file)))
+
+(defun hierarchy-examples-fs-children (folder)
+  "Return sub-directories of FOLDER as absolute paths."
+  (when (file-directory-p folder)
+    (seq-filter #'hierarchy-examples-fs-directory-p (directory-files folder t))))
+
+(defun hierarchy-examples-fs-parent (folder)
+  "Return parent of FOLDER."
+  (when (not (string= folder "/"))
+    (directory-file-name (file-name-directory folder))))
 
 (defun hierarchy-examples-fs-build-fs-hierarchy (folder)
   "Return hierarchy of FOLDER."
-  (let* ((folder (f-expand folder))
-         (parentfn (lambda (file) (f-parent file)))
-         (childrenfn (lambda (file) (when (and (f-directory? file)
-                                          (s-starts-with? folder file))
-                                 (f-directories file))))
+  (let* ((folder (expand-file-name folder))
+         (parentfn #'hierarchy-examples-fs-parent)
+         (childrenfn (lambda (file) (when (string-prefix-p folder file)
+                                 (hierarchy-examples-fs-children file))))
          (hierarchy (hierarchy-new)))
     (hierarchy-add-tree hierarchy folder parentfn childrenfn)
-    ;; sort filenames alphabetically
     (hierarchy-sort hierarchy)
     hierarchy))
 
-(defun hierarchy-examples-fs-labelfn (file _)
-  "Insert name of FILE at current position.
+(defun hierarchy-examples-fs-labelfn (folder _)
+  "Insert name of FOLDER at current position.
 
 _ is ignored."
-  (insert (if (string= file "/")
+  (insert (if (string= folder "/")
               "/"
-            (f-filename file))))
+            (file-name-nondirectory folder))))
 
 (defun hierarchy-examples-fs-display-filesystem (&optional folder)
   "Display hierarchy of FOLDER in a tabulated list."
