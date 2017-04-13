@@ -61,4 +61,4 @@ lint : $(SRCS) clean-elc
 	# Run package-lint to check for packaging mistakes
 	${CASK} emacs $(EMACSFLAGS) \
 	-l package-lint.el \
-	-f package-lint-batch-and-exit ${SRCS}
+	-f package-lint-batch-and-exit hierarchy.el
