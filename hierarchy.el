@@ -24,6 +24,8 @@
 
 ;;; Commentary:
 
+;; Library to create, query, navigate and display hierarchy structures.
+
 ;; Creation: After having created a hierarchy with `hierarchy-new', populate it by
 ;; calling `hierarchy-add-tree' or `hierarchy-add-trees'.  You can then optionally sort its
 ;; element with `hierarchy-sort'.
