@@ -166,6 +166,12 @@ contains some code to display file hierarchies:
 
 [[file:media/files-tree-anime.gif]]
 
+*** Class hierarchy example
+With a bit more work, the hierarchy library can also be used to
+display class hierarchies (as I am currently experimenting in [[https://github.com/DamienCassou/klassified.el][this
+project]]).
+
+[[file:media/klassified-tabulated-anime.gif]]
 ** Contributing
 
 Yes, please do! See [[file:CONTRIBUTING.md][CONTRIBUTING]] for guidelines.
