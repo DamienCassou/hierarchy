@@ -168,13 +168,15 @@ default, SORTFN is `string-lessp'."
 
 (defun hierarchy-extract-tree (hierarchy item)
   "Return a copy of HIERARCHY with ITEM's descendants and parents."
-  (let ((tree (hierarchy-new)))
-    (hierarchy-add-tree tree item
-                        (lambda (each) (hierarchy-parent hierarchy each))
-                        (lambda (each) (when (or (equal each item)
-                                            (hierarchy-descendant-p hierarchy each item))
-                                    (hierarchy-children hierarchy each))))
-    tree))
+  (if (not (hierarchy-has-item hierarchy item))
+      nil
+    (let ((tree (hierarchy-new)))
+      (hierarchy-add-tree tree item
+                          (lambda (each) (hierarchy-parent hierarchy each))
+                          (lambda (each) (when (or (equal each item)
+                                              (hierarchy-descendant-p hierarchy each item))
+                                      (hierarchy-children hierarchy each))))
+     tree)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
