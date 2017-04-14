@@ -308,6 +308,10 @@
     (should (equal (hierarchy-children birds 'animal) '(bird)))
     (should (equal (hierarchy-children birds 'bird) '(dove pigeon)))))
 
+(ert-deftest hierarchy-extract-tree-nil-if-not-in-hierarchy ()
+  (let* ((animals (test-helper-animals)))
+    (should-not (hierarchy-extract-tree animals 'foobar))))
+
 (ert-deftest hierarchy-labelfn-indent-no-indent-if-0 ()
   (let* ((labelfn-base (lambda (_item _indent) (insert "foo")))
          (labelfn (hierarchy-labelfn-indent labelfn-base)))
