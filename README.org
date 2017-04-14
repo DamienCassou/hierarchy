@@ -139,6 +139,33 @@ shown in below animated pictures.
 
 [[file:media/animals-tree-anime.gif]]
 
+** Examples
+This library can be used to manipulate any kind of hierarchy. The
+following demonstrates this claim.
+*** File-system example
+The hierarchy library can be used to display any kind of hierarchy you
+need. For example, the file ~./examples/hierarchy-examples-fs.el~
+contains some code to display file hierarchies:
+
+#+BEGIN_SRC emacs-lisp :session animals :exports code
+  (load "./examples/hierarchy-examples-fs.el")
+
+  ;; Execute one of the following lines to show the `.emacd.d' hierarchy
+  ;; in either a tabulated list or a tree widget. This takes around 3
+  ;; seconds on my computer.
+
+  (hierarchy-examples-fs-display-filesystem "~/.emacs.d")
+
+  (hierarchy-examples-fs-display-filesystem-tree "~/.emacs.d")
+#+END_SRC
+
+#+RESULTS:
+: #<buffer *hierarchy-examples-fs-tree*>
+
+[[file:media/files-tabulated-anime.gif]]
+
+[[file:media/files-tree-anime.gif]]
+
 ** Contributing
 
 Yes, please do! See [[file:CONTRIBUTING.md][CONTRIBUTING]] for guidelines.
