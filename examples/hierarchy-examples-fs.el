@@ -70,8 +70,6 @@ _ is ignored."
                     #'hierarchy-examples-fs-labelfn (lambda (item _) (dired item)))))))
     (switch-to-buffer buffer)))
 
-;; (hierarchy-examples-fs-display-filesystem "~/.emacs.d")
-
 (defun hierarchy-examples-fs-display-filesystem-tree (&optional folder)
   "Display hierarchy of FOLDER in a tree widget."
   (let* ((hierarchy (hierarchy-examples-fs-build-fs-hierarchy folder))
@@ -81,9 +79,16 @@ _ is ignored."
       (setq-local buffer-read-only t)
       (let ((inhibit-read-only t))
         (erase-buffer)
-        (widget-create tree-widget))
+        (widget-create tree-widget)
+        (goto-char (point-min)))
       (switch-to-buffer (current-buffer)))))
 
+;; Execute one of the following lines to show the .emacd.d hierarchy
+;; in either a tabulated list or a tree widget. This takes around 4
+;; seconds on my computer.
+;;
+;; (hierarchy-examples-fs-display-filesystem "~/.emacs.d")
+;;
 ;; (hierarchy-examples-fs-display-filesystem-tree "~/.emacs.d")
 
 (provide 'hierarchy-examples-fs)
