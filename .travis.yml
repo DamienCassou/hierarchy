@@ -17,5 +17,4 @@ matrix:
 
 script:
   - emacs --version
-  - make test
-  - make lint
+  - make check

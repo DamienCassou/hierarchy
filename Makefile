@@ -12,11 +12,12 @@ EMACS_D      = ~/.emacs.d
 USER_ELPA_D  = $(EMACS_D)/elpa
 
 SRCS         = $(filter-out %-pkg.el, $(wildcard *.el))
+EXAMPLES     = $(wildcard examples/*.el)
 TESTS        = $(wildcard test/*.el)
 TAR          = $(DIST)/hierarchy-$(VERSION).tar
 
 
-.PHONY: all test unit lint ecukes deps install uninstall reinstall clean-all clean clean-elc
+.PHONY: all check test unit lint ecukes deps install uninstall reinstall clean-all clean clean-elc
 all : deps $(TAR)
 
 deps :
@@ -35,7 +36,7 @@ clean-all : clean
 	rm -rf $(PKG_DIR)
 
 clean-elc :
-	rm -f *.elc test/*.elc
+	rm -f *.elc test/*.elc examples/*.elc
 
 clean : clean-elc
 	rm -rf $(DIST)
@@ -47,6 +48,8 @@ $(TAR) : $(DIST) $(SRCS)
 $(DIST) :
 	mkdir $(DIST)
 
+check : test lint
+
 test: unit
 
 unit: $(PKG_DIR)
@@ -56,9 +59,9 @@ lint : $(SRCS) clean-elc
 	# Byte compile all and stop on any warning or error
 	${CASK} emacs $(EMACSFLAGS) \
 	--eval "(setq byte-compile-error-on-warn t)" \
-	-L . -f batch-byte-compile ${SRCS} ${TESTS}
+	-L . -f batch-byte-compile ${SRCS} ${EXAMPLES} ${TESTS}
 
 	# Run package-lint to check for packaging mistakes
 	${CASK} emacs $(EMACSFLAGS) \
 	-l package-lint.el \
-	-f package-lint-batch-and-exit hierarchy.el
+	-f package-lint-batch-and-exit ${SRCS}
