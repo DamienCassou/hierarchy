@@ -16,7 +16,7 @@ TESTS        = $(wildcard test/*.el)
 TAR          = $(DIST)/hierarchy-$(VERSION).tar
 
 
-.PHONY: all test unit lint ecukes deps install uninstall reinstall clean-all clean clean-elc
+.PHONY: all check test unit lint ecukes deps install uninstall reinstall clean-all clean clean-elc
 all : deps $(TAR)
 
 deps :
@@ -46,6 +46,8 @@ $(TAR) : $(DIST) $(SRCS)
 
 $(DIST) :
 	mkdir $(DIST)
+
+check : test lint
 
 test: unit
 
