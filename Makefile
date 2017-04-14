@@ -52,7 +52,7 @@ check : test lint
 
 test: unit
 
-unit: $(PKG_DIR)
+unit: $(PKG_DIR) clean-elc
 	${CASK} exec ert-runner
 
 lint : $(SRCS) clean-elc
