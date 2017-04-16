@@ -176,7 +176,7 @@ default, SORTFN is `string-lessp'."
                           (lambda (each) (when (or (equal each item)
                                               (hierarchy-descendant-p hierarchy each item))
                                       (hierarchy-children hierarchy each))))
-     tree)))
+      tree)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
