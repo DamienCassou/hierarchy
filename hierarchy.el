@@ -183,9 +183,17 @@ default, SORTFN is `string-lessp'."
 ;; Querying
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun hierarchy-items (hierarchy)
+  "Return a list of all items of HIERARCHY."
+  (map-keys (hierarchy--seen-items hierarchy)))
+
 (defun hierarchy-has-item (hierarchy item)
   "Return t if HIERARCHY includes ITEM."
   (map-contains-key (hierarchy--seen-items hierarchy) item))
+
+(defun hierarchy-empty-p (hierarchy)
+  "Return t if HIERARCHY is empty."
+  (= 0 (hierarchy-length hierarchy)))
 
 (defun hierarchy-length (hierarchy)
   "Return the number of items in HIERARCHY."
