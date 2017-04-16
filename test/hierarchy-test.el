@@ -168,6 +168,12 @@
     (should-error
      (hierarchy--add-relation hierarchy 'bird 'cow #'identity))))
 
+(ert-deftest hierarchy-empty-p-return-non-nil-for-empty ()
+  (should (hierarchy-empty-p (hierarchy-new))))
+
+(ert-deftest hierarchy-empty-p-return-nil-for-non-empty ()
+  (should-not (hierarchy-empty-p (test-helper-animals))))
+
 (ert-deftest hierarchy-length-of-empty-is-0 ()
   (should (equal (hierarchy-length (hierarchy-new)) 0)))
 
@@ -311,6 +317,19 @@
 (ert-deftest hierarchy-extract-tree-nil-if-not-in-hierarchy ()
   (let* ((animals (test-helper-animals)))
     (should-not (hierarchy-extract-tree animals 'foobar))))
+
+(ert-deftest hierarchy-items-of-empty-hierarchy-is-empty ()
+  (should (seq-empty-p (hierarchy-items (hierarchy-new)))))
+
+(ert-deftest hierarchy-items-returns-sequence-of-same-length ()
+  (let* ((animals (test-helper-animals))
+         (result (hierarchy-items animals)))
+    (should (= (seq-length result) (hierarchy-length animals)))))
+
+(ert-deftest hierarchy-items-return-all-elements-of-hierarchy ()
+  (let* ((animals (test-helper-animals))
+         (result (hierarchy-items animals)))
+    (should (equal (seq-sort #'string< result) '(animal bird cow dolphin dove pigeon)))))
 
 (ert-deftest hierarchy-labelfn-indent-no-indent-if-0 ()
   (let* ((labelfn-base (lambda (_item _indent) (insert "foo")))
