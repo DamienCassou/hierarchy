@@ -385,6 +385,18 @@
   (let ((labelfn (lambda (item _indent) (insert item))))
     (should (equal (hierarchy-labelfn-to-string labelfn "foo" 1) "foo"))))
 
+(ert-deftest hierarchy-print ()
+  (let* ((animals (test-helper-animals))
+         (result (with-temp-buffer
+                   (hierarchy-print animals)
+                   (buffer-substring-no-properties (point-min) (point-max)))))
+    (should (equal result "animal\n  bird\n    dove\n    pigeon\n  cow\n  dolphin\n"))))
+
+(ert-deftest hierarchy-to-string ()
+  (let* ((animals (test-helper-animals))
+         (result (hierarchy-to-string animals)))
+    (should (equal result "animal\n  bird\n    dove\n    pigeon\n  cow\n  dolphin\n"))))
+
 (ert-deftest hierarchy-tabulated-display ()
   (let* ((animals (test-helper-animals))
          (labelfn (lambda (item _indent) (insert (symbol-name item))))

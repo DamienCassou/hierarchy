@@ -351,6 +351,25 @@ indentation value (a number) as input."
     (funcall labelfn item indent)
     (buffer-substring (point-min) (point-max))))
 
+(defun hierarchy-print (hierarchy &optional to-string)
+  "Insert HIERARCHY in current buffer as plain text.
+
+Use TO-STRING to convert each element to a string.  TO-STRING is
+a function taking an item of HIERARCHY as input and returning a
+string.  If nil, TO-STRING defaults to a call to `format' with \"%s\"."
+  (let ((to-string (or to-string (lambda (item) (format "%s" item)))))
+    (hierarchy-map
+     (hierarchy-labelfn-indent (lambda (item _) (insert (funcall to-string item) "\n")))
+     hierarchy)))
+
+(defun hierarchy-to-string (hierarchy &optional to-string)
+  "Return a string representing HIERARCHY.
+
+TO-STRING is passed unchanged to `hierarchy-print'."
+  (with-temp-buffer
+    (hierarchy-print hierarchy to-string)
+    (buffer-substring (point-min) (point-max))))
+
 (defun hierarchy-tabulated-imenu-action (_item-name position)
   "Move to ITEM-NAME at POSITION in current buffer."
   (goto-char position)
