@@ -178,6 +178,12 @@ default, SORTFN is `string-lessp'."
                                       (hierarchy-children hierarchy each))))
       tree)))
 
+(defun hierarchy-copy (hierarchy)
+  "Return a copy of HIERARCHY.
+
+Items in HIERARCHY are shared, but structure is not."
+  (hierarchy-map-hierarchy (lambda (item _) (identity item)) hierarchy))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Querying
@@ -253,6 +259,38 @@ and either:
     (hierarchy-child-p hierarchy item1 item2)
     (hierarchy-descendant-p hierarchy (hierarchy-parent hierarchy item1) item2))))
 
+(defun hierarchy--set-equal (list1 list2 &rest cl-keys)
+  "Return true if LIST1 and LIST2 have same elements.
+
+I.e., if every element of LIST1 also appears in LIST2 and if
+every element of LIST2 also appears in LIST1.
+
+CL-KEYS are key-value pairs just like in `cl-subsetp'.  Supported
+keys are :key and :test."
+  (and (apply 'cl-subsetp list1 list2 cl-keys)
+       (apply 'cl-subsetp list2 list1 cl-keys)))
+
+(defun hierarchy-equal (hierarchy1 hierarchy2)
+  "Return t if HIERARCHY1 and HIERARCHY2 are equal.
+
+Two equal hierarchies share the same items and the same
+relationships among them."
+  (and (hierarchy-p hierarchy1)
+       (hierarchy-p hierarchy2)
+       (= (hierarchy-length hierarchy1) (hierarchy-length hierarchy2))
+       ;; parents are the same
+       (seq-every-p (lambda (child)
+                      (equal (hierarchy-parent hierarchy1 child)
+                             (hierarchy-parent hierarchy2 child)))
+                    (map-keys (hierarchy--parents hierarchy1)))
+       ;; children are the same
+       (seq-every-p (lambda (parent)
+                      (hierarchy--set-equal
+                       (hierarchy-children hierarchy1 parent)
+                       (hierarchy-children hierarchy2 parent)
+                       :test #'equal))
+                    (map-keys (hierarchy--children hierarchy1)))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Navigation
@@ -310,6 +348,39 @@ root if nil)."
              (mapcar (lambda (child)
                        (hierarchy-map-tree function hierarchy child (1+ indent)))
                      (hierarchy-children hierarchy item)))))
+
+(defun hierarchy-map-hierarchy (function hierarchy)
+  "Apply FUNCTION to each item of HIERARCHY in a new hierarchy."
+  (let* ((items (make-hash-table :test #'equal))
+         (transform (lambda (item) (map-elt items item))))
+    ;; Make 'items', a table mapping original items to their
+    ;; transformation
+    (hierarchy-map (lambda (item indent)
+                     (map-put items item (funcall function item indent)))
+                   hierarchy)
+    (hierarchy--make
+     :roots (mapcar transform (hierarchy-roots hierarchy))
+     :parents (let ((result (make-hash-table :test #'equal)))
+                (map-apply (lambda (child parent)
+                             (map-put result
+                                      (funcall transform child)
+                                      (funcall transform parent)))
+                           (hierarchy--parents hierarchy))
+                result)
+     :children (let ((result (make-hash-table :test #'equal)))
+                 (map-apply (lambda (parent children)
+                              (map-put result
+                                       (funcall transform parent)
+                                       (seq-map transform children)))
+                            (hierarchy--children hierarchy))
+                 result)
+     :seen-items (let ((result (make-hash-table :test #'equal)))
+                   (map-apply (lambda (item v)
+                                (map-put result
+                                         (funcall transform item)
+                                         v))
+                              (hierarchy--seen-items hierarchy))
+                   result))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
