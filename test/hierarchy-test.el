@@ -247,6 +247,31 @@
     (should-not (hierarchy-descendant-p animals 'bird 'bird))
     (should-not (hierarchy-descendant-p animals 'animal 'animal))))
 
+;; keywords supported: :test :key
+(ert-deftest hierarchy--set-equal ()
+  (should     (hierarchy--set-equal '(1 2 3) '(1 2 3)))
+  (should     (hierarchy--set-equal '(1 2 3) '(3 2 1)))
+  (should     (hierarchy--set-equal '(3 2 1) '(1 2 3)))
+  (should-not (hierarchy--set-equal '(2 3) '(3 2 1)))
+  (should-not (hierarchy--set-equal '(1 2 3) '(2 3)))
+  (should-not (hierarchy--set-equal '("1" "2") '("2" "1") :test #'eq))
+  (should     (hierarchy--set-equal '("1" "2") '("2" "1") :test #'equal))
+  (should-not (hierarchy--set-equal '(1 2) '(-1 -2)))
+  (should     (hierarchy--set-equal '(1 2) '(-1 -2) :key #'abs))
+  (should-not (hierarchy--set-equal '(("1" 1) ("2" 1)) '(("1" 2) ("2" 2))))
+  (should-not (hierarchy--set-equal '(("1" 1) ("2" 1)) '(("1" 2) ("2" 2)) :key #'car))
+  (should-not (hierarchy--set-equal '(("1" 1) ("2" 1)) '(("1" 2) ("2" 2)) :test #'equal))
+  (should     (hierarchy--set-equal '(("1" 1) ("2" 1)) '(("1" 2) ("2" 2)) :key #'car :test #'equal)))
+
+(ert-deftest hierarchy-equal-returns-true-for-same-hierarchy ()
+  (let ((animals (test-helper-animals)))
+    (should (hierarchy-equal animals animals))
+    (should (hierarchy-equal (test-helper-animals) animals))))
+
+(ert-deftest hierarchy-equal-returns-true-for-hierarchy-copies ()
+  (let ((animals (test-helper-animals)))
+    (should (hierarchy-equal animals (hierarchy-copy animals)))))
+
 (ert-deftest hierarchy-sort ()
   (let ((animals (test-helper-animals)))
     (should (equal (hierarchy-roots animals) '(animal)))
@@ -305,6 +330,29 @@
                      ((bird 1 ((dove 2 nil) (pigeon 2 nil)))
                       (cow 1 nil)
                       (dolphin 1 nil)))))))
+
+(ert-deftest hierarchy-map-hierarchy-keeps-hierarchy ()
+  (let* ((animals (test-helper-animals))
+         (result (hierarchy-map-hierarchy (lambda (item _) (identity item))
+                                          animals)))
+    (should (hierarchy-equal animals result))))
+
+(ert-deftest hierarchy-map-applies-function ()
+  (let* ((animals (test-helper-animals))
+         (parentfn (lambda (item) (cond
+                              ((equal item "bird") "animal")
+                              ((equal item "dove") "bird")
+                              ((equal item "pigeon") "bird")
+                              ((equal item "cow") "animal")
+                              ((equal item "dolphin") "animal"))))
+         (expected (hierarchy-new)))
+    (hierarchy-add-tree expected "dove" parentfn)
+    (hierarchy-add-tree expected "pigeon" parentfn)
+    (hierarchy-add-tree expected "cow" parentfn)
+    (hierarchy-add-tree expected "dolphin" parentfn)
+    (should (hierarchy-equal
+             (hierarchy-map-hierarchy (lambda (item _) (symbol-name item)) animals)
+             expected))))
 
 (ert-deftest hierarchy-extract-tree ()
   (let* ((animals (test-helper-animals))
