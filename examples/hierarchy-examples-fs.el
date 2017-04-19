@@ -1,4 +1,4 @@
-;;; hierarchy-examples-fs.el --- Some example hierarchies  -*- lexical-binding: t; -*-
+;;; hierarchy-examples-fs.el --- Represent the filesystem as a hierarchy  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2017  Damien Cassou
 
