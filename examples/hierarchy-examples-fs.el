@@ -72,6 +72,7 @@ _ is ignored."
 
 (defun hierarchy-examples-fs-display-filesystem-tree (&optional folder)
   "Display hierarchy of FOLDER in a tree widget."
+  (require 'tree-widget)
   (let* ((hierarchy (hierarchy-examples-fs-build-fs-hierarchy folder))
          (tree-widget (hierarchy-convert-to-tree-widget
                        hierarchy #'hierarchy-examples-fs-labelfn)))
