@@ -7,6 +7,8 @@
 
 Library to create, query, navigate and display hierarchy structures.
 
+#+TOC: headlines 2
+
 ** Installing
 
 Use [[http://melpa.org/][melpa]].
