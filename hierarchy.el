@@ -260,7 +260,7 @@ and either:
     (hierarchy-descendant-p hierarchy (hierarchy-parent hierarchy item1) item2))))
 
 (defun hierarchy--set-equal (list1 list2 &rest cl-keys)
-  "Return true if LIST1 and LIST2 have same elements.
+  "Return non-nil if LIST1 and LIST2 have same elements.
 
 I.e., if every element of LIST1 also appears in LIST2 and if
 every element of LIST2 also appears in LIST1.
