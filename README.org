@@ -1,7 +1,14 @@
 * Hierarchy
-
-[[https://travis-ci.org/DamienCassou/hierarchy.svg?branch%3Dmaster][https://travis-ci.org/DamienCassou/hierarchy.svg?branch=master]]
-[[https://coveralls.io/repos/github/DamienCassou/hierarchy/badge.svg?branch%3Dmaster][https://coveralls.io/repos/github/DamienCassou/hierarchy/badge.svg?branch=master]]
+  #+BEGIN_HTML
+      <p>
+        <a href="https://travis-ci.org/DamienCassou/hierarchy">
+          <img src="https://travis-ci.org/DamienCassou/hierarchy.svg?branch=master" alt="Build Status" />
+        </a>
+        <a href='https://coveralls.io/github/DamienCassou/hierarchy?branch=master'>
+          <img src='https://coveralls.io/repos/github/DamienCassou/hierarchy/badge.svg?branch=master' alt='Coverage Status' />
+        </a>
+      </p>
+  #+END_HTML
 
 ** Summary
 
