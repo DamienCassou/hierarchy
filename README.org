@@ -151,8 +151,7 @@ This library can be used to manipulate any kind of hierarchy. The
 following demonstrates this claim.
 *** File-system example
 The hierarchy library can be used to display any kind of hierarchy you
-need. For example, the file ~./examples/hierarchy-examples-fs.el~
-contains some code to display file hierarchies:
+need. For example, a [[file:examples/hierarchy-examples-fs.el][file-system navigator]] is provided as an example.
 
 #+BEGIN_SRC emacs-lisp :session animals :exports code
   (load "./examples/hierarchy-examples-fs.el")
@@ -179,6 +178,10 @@ display class hierarchies (as I am currently experimenting in [[https://github.c
 project]]).
 
 [[file:media/klassified-tabulated-anime.gif]]
+*** JSON navigator example
+A [[file:examples/hierarchy-examples-json.el][JSON navigator]] is also implemented as yet another example.
+
+[[file:media/json-tree-anime.gif]]
 ** Contributing
 
 Yes, please do! See [[file:CONTRIBUTING.md][CONTRIBUTING]] for guidelines.
