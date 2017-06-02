@@ -179,7 +179,7 @@ project]]).
 
 [[file:media/klassified-tabulated-anime.gif]]
 *** JSON navigator example
-A [[file:examples/hierarchy-examples-json.el][JSON navigator]] is also implemented as yet another example.
+A [[https://github.com/DamienCassou/json-navigator][JSON navigator]] is also implemented as yet another example.
 
 [[file:media/json-tree-anime.gif]]
 ** Contributing
