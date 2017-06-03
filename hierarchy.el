@@ -152,6 +152,31 @@ PARENTFN, CHILDRENFN and ACCEPTFN have the same meaning as in `hierarchy-add'."
              (hierarchy-add-tree hierarchy item parentfn childrenfn acceptfn))
            items))
 
+(defun hierarchy-from-list (list &optional wrap childrenfn)
+  "Create and return a hierarchy built from LIST.
+
+If WRAP is non-nil, allow duplicate items in LIST by wraping
+each item in a cons (id . item).  The root's id is 1.
+
+CHILDRENFN is a function (defaults to `cdr') taking LIST as a
+parameter which should return LIST's children (a list).  Each
+child is (recursively) passed as a parameter to CHILDRENFN to get
+its own children.  Because of this parameter, LIST can be
+anything, not necessarily a list."
+  (let* ((hierarchy (hierarchy-new))
+         (childrenfn (or childrenfn #'cdr))
+         (id 0)
+         (wrapfn (lambda (item)
+                   (if wrap
+                       (cons (setq id (1+ id)) item)
+                     item)))
+         (unwrapfn (if wrap #'cdr #'identity)))
+    (hierarchy-add-tree
+     hierarchy (funcall wrapfn list) nil
+     (lambda (item) (mapcar wrapfn (funcall childrenfn
+                                            (funcall unwrapfn item)))))
+    hierarchy))
+
 (defun hierarchy-sort (hierarchy &optional sortfn)
   "Modify HIERARCHY so that its roots and item's children are sorted.
 

@@ -170,6 +170,46 @@
     (should (equal (hierarchy-children hierarchy 'animal) '(bird)))
     (should (equal (hierarchy-children hierarchy 'bird) '(pigeon dove)))))
 
+(ert-deftest hierarchy-from-list ()
+  (let ((hierarchy (hierarchy-from-list
+                    '(animal (bird (dove)
+                                   (pigeon))
+                             (cow)
+                             (dolphin)))))
+    (hierarchy-sort hierarchy (lambda (item1 item2)
+                                (string< (car item1)
+                                         (car item2))))
+    (should (equal (hierarchy-to-string hierarchy (lambda (item) (symbol-name (car item))))
+                   "animal\n  bird\n    dove\n    pigeon\n  cow\n  dolphin\n"))))
+
+(ert-deftest hierarchy-from-list-with-duplicates ()
+  (let ((hierarchy (hierarchy-from-list
+                    '(a (b) (b))
+                    t)))
+    (hierarchy-sort hierarchy (lambda (item1 item2)
+                                ;; sort by ID
+                                (< (car item1) (car item2))))
+    (should (equal (hierarchy-length hierarchy) 3))
+    (should (equal (hierarchy-to-string
+                    hierarchy
+                    (lambda (item)
+                      (format "%s(%s)"
+                              (cadr item)
+                              (car item))))
+                   "a(1)\n  b(2)\n  b(3)\n"))))
+
+(ert-deftest hierarchy-from-list-with-childrenfn ()
+  (let ((hierarchy (hierarchy-from-list
+                    "abc"
+                    nil
+                    (lambda (item)
+                      (when (string= item "abc")
+                        (split-string item "" t))))))
+    (hierarchy-sort hierarchy (lambda (item1 item2) (string< item1 item2)))
+    (should (equal (hierarchy-length hierarchy) 4))
+    (should (equal (hierarchy-to-string hierarchy)
+                   "abc\n  a\n  b\n  c\n"))))
+
 (ert-deftest hierarchy-add-relation-check-error-when-different-parent ()
   (let ((parentfn (lambda (item)
                     (cl-case item
