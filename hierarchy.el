@@ -3,7 +3,7 @@
 ;; Copyright (C) 2017 Damien Cassou
 
 ;; Author: Damien Cassou <damien@cassou.me>
-;; Version: 0.4.0
+;; Version: 0.5.0
 ;; Package-Requires: ((emacs "25.1"))
 ;; GIT: https://github.com/DamienCassou/hierarchy
 ;;
