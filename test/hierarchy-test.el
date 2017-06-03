@@ -37,17 +37,19 @@
     (should (equal (hierarchy-roots hierarchy) '(animal)))))
 
 (ert-deftest hierarchy-add-one-item-with-parent ()
-  (let ((parentfn (lambda (item) (cl-case item
-                              (bird 'animal))))
+  (let ((parentfn (lambda (item)
+                    (cl-case item
+                      (bird 'animal))))
         (hierarchy (hierarchy-new)))
     (hierarchy-add-tree hierarchy 'bird parentfn)
     (should (equal (hierarchy-roots hierarchy) '(animal)))
     (should (equal (hierarchy-children hierarchy 'animal) '(bird)))))
 
 (ert-deftest hierarchy-add-one-item-with-parent-and-grand-parent ()
-  (let ((parentfn (lambda (item) (cl-case item
-                              (dove 'bird)
-                              (bird 'animal))))
+  (let ((parentfn (lambda (item)
+                    (cl-case item
+                      (dove 'bird)
+                      (bird 'animal))))
         (hierarchy (hierarchy-new)))
     (hierarchy-add-tree hierarchy 'dove parentfn)
     (should (equal (hierarchy-roots hierarchy) '(animal)))
@@ -62,8 +64,9 @@
     (should (equal (hierarchy-roots hierarchy) '(animal)))))
 
 (ert-deftest hierarchy-add-same-child-twice ()
-  (let ((parentfn (lambda (item) (cl-case item
-                              (bird 'animal))))
+  (let ((parentfn (lambda (item)
+                    (cl-case item
+                      (bird 'animal))))
         (hierarchy (hierarchy-new)))
     (hierarchy-add-tree hierarchy 'bird parentfn)
     (hierarchy-add-tree hierarchy 'bird parentfn)
@@ -71,8 +74,9 @@
     (should (equal (hierarchy-children hierarchy 'animal) '(bird)))))
 
 (ert-deftest hierarchy-add-item-and-its-parent ()
-  (let ((parentfn (lambda (item) (cl-case item
-                              (bird 'animal))))
+  (let ((parentfn (lambda (item)
+                    (cl-case item
+                      (bird 'animal))))
         (hierarchy (hierarchy-new)))
     (hierarchy-add-tree hierarchy 'bird parentfn)
     (hierarchy-add-tree hierarchy 'animal parentfn)
@@ -80,8 +84,9 @@
     (should (equal (hierarchy-children hierarchy 'animal) '(bird)))))
 
 (ert-deftest hierarchy-add-item-and-its-child ()
-  (let ((parentfn (lambda (item) (cl-case item
-                              (bird 'animal))))
+  (let ((parentfn (lambda (item)
+                    (cl-case item
+                      (bird 'animal))))
         (hierarchy (hierarchy-new)))
     (hierarchy-add-tree hierarchy 'animal parentfn)
     (hierarchy-add-tree hierarchy 'bird parentfn)
@@ -89,9 +94,10 @@
     (should (equal (hierarchy-children hierarchy 'animal) '(bird)))))
 
 (ert-deftest hierarchy-add-two-items-sharing-parent ()
-  (let ((parentfn (lambda (item) (cl-case item
-                              (dove 'bird)
-                              (pigeon 'bird))))
+  (let ((parentfn (lambda (item)
+                    (cl-case item
+                      (dove 'bird)
+                      (pigeon 'bird))))
         (hierarchy (hierarchy-new)))
     (hierarchy-add-tree hierarchy 'dove parentfn)
     (hierarchy-add-tree hierarchy 'pigeon parentfn)
@@ -99,9 +105,10 @@
     (should (equal (hierarchy-children hierarchy 'bird) '(pigeon dove)))))
 
 (ert-deftest hierarchy-add-two-hierarchies ()
-  (let ((parentfn (lambda (item) (cl-case item
-                              (dove 'bird)
-                              (circle 'shape))))
+  (let ((parentfn (lambda (item)
+                    (cl-case item
+                      (dove 'bird)
+                      (circle 'shape))))
         (hierarchy (hierarchy-new)))
     (hierarchy-add-tree hierarchy 'dove parentfn)
     (hierarchy-add-tree hierarchy 'circle parentfn)
@@ -138,22 +145,25 @@
     (should (equal (hierarchy-children hierarchy 'pigeon) '(ashy-wood-pigeon)))))
 
 (ert-deftest hierarchy-add-twice-with-parentfn-and-childrenfn ()
-  (let* ((parentfn (lambda (item) (cl-case item
-                               (dove 'bird)
-                               (bird 'animal))))
-         (childrenfn (lambda (item) (cl-case item
-                                 (animal '(bird))
-                                 (bird '(dove)))))
+  (let* ((parentfn (lambda (item)
+                     (cl-case item
+                       (dove 'bird)
+                       (bird 'animal))))
+         (childrenfn (lambda (item)
+                       (cl-case item
+                         (animal '(bird))
+                         (bird '(dove)))))
          (hierarchy (hierarchy-new)))
     (hierarchy-add-tree hierarchy 'bird parentfn childrenfn)
     (should (equal (hierarchy-children hierarchy 'animal) '(bird)))
     (should (equal (hierarchy-children hierarchy 'bird) '(dove)))))
 
 (ert-deftest hierarchy-add-trees ()
-  (let ((parentfn (lambda (item) (cl-case item
-                              (dove 'bird)
-                              (pigeon 'bird)
-                              (bird 'animal))))
+  (let ((parentfn (lambda (item)
+                    (cl-case item
+                      (dove 'bird)
+                      (pigeon 'bird)
+                      (bird 'animal))))
         (hierarchy (hierarchy-new)))
     (hierarchy-add-trees hierarchy '(dove pigeon) parentfn)
     (should (equal (hierarchy-roots hierarchy) '(animal)))
@@ -161,8 +171,9 @@
     (should (equal (hierarchy-children hierarchy 'bird) '(pigeon dove)))))
 
 (ert-deftest hierarchy-add-relation-check-error-when-different-parent ()
-  (let ((parentfn (lambda (item) (cl-case item
-                              (bird 'animal))))
+  (let ((parentfn (lambda (item)
+                    (cl-case item
+                      (bird 'animal))))
         (hierarchy (hierarchy-new)))
     (hierarchy-add-tree hierarchy 'bird parentfn)
     (should-error
@@ -178,20 +189,22 @@
   (should (equal (hierarchy-length (hierarchy-new)) 0)))
 
 (ert-deftest hierarchy-length-of-non-empty-counts-items ()
-  (let ((parentfn (lambda (item) (cl-case item
-                              (bird 'animal)
-                              (dove 'bird)
-                              (pigeon 'bird))))
+  (let ((parentfn (lambda (item)
+                    (cl-case item
+                      (bird 'animal)
+                      (dove 'bird)
+                      (pigeon 'bird))))
         (hierarchy (hierarchy-new)))
     (hierarchy-add-tree hierarchy 'dove parentfn)
     (hierarchy-add-tree hierarchy 'pigeon parentfn)
     (should (equal (hierarchy-length hierarchy) 4))))
 
 (ert-deftest hierarchy-has-root ()
-  (let ((parentfn (lambda (item) (cl-case item
-                              (bird 'animal)
-                              (dove 'bird)
-                              (pigeon 'bird))))
+  (let ((parentfn (lambda (item)
+                    (cl-case item
+                      (bird 'animal)
+                      (dove 'bird)
+                      (pigeon 'bird))))
         (hierarchy (hierarchy-new)))
     (should-not (hierarchy-has-root hierarchy 'animal))
     (should-not (hierarchy-has-root hierarchy 'bird))
@@ -339,12 +352,13 @@
 
 (ert-deftest hierarchy-map-applies-function ()
   (let* ((animals (test-helper-animals))
-         (parentfn (lambda (item) (cond
-                              ((equal item "bird") "animal")
-                              ((equal item "dove") "bird")
-                              ((equal item "pigeon") "bird")
-                              ((equal item "cow") "animal")
-                              ((equal item "dolphin") "animal"))))
+         (parentfn (lambda (item)
+                     (cond
+                      ((equal item "bird") "animal")
+                      ((equal item "dove") "bird")
+                      ((equal item "pigeon") "bird")
+                      ((equal item "cow") "animal")
+                      ((equal item "dolphin") "animal"))))
          (expected (hierarchy-new)))
     (hierarchy-add-tree expected "dove" parentfn)
     (hierarchy-add-tree expected "pigeon" parentfn)
