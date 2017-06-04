@@ -526,31 +526,6 @@
                      (buffer-substring-no-properties (point-min) (point-max)))))
     (should (equal contents "animal\nbird\ndove\npigeon\ncow\ndolphin\n"))))
 
-(require 'wid-edit)
-
-(ert-deftest hierarchy-convert-to-tree-widget ()
-  (let* ((animals (test-helper-animals))
-         (labelfn (lambda (item _indent) (insert (symbol-name item))))
-         (tree-widget (hierarchy-convert-to-tree-widget animals labelfn)))
-    (pcase tree-widget
-      (`(,_
-         :args ((,_
-                 :args ((,_
-                         :args nil
-                         :tag "dove")
-                        (,_
-                         :args nil
-                         :tag "pigeon"))
-                 :tag "bird")
-                (,_
-                 :args nil
-                 :tag "cow")
-                (,_
-                 :args nil
-                 :tag "dolphin"))
-         :tag "animal") t)
-      (otherwise (should-not otherwise)))))
-
 (provide 'hierarchy-test)
 
 ;;; hierarchy-test.el ends here
