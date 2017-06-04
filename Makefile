@@ -54,6 +54,7 @@ test: unit
 
 unit: $(PKG_DIR) clean-elc
 	${CASK} exec ert-runner
+	${CASK} exec buttercup -L .
 
 lint : $(SRCS) clean-elc
 	# Byte compile all and stop on any warning or error

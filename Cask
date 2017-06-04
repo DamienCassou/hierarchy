@@ -4,6 +4,7 @@
 (package-file "hierarchy.el")
 
 (development
+ (depends-on "buttercup")
  (depends-on "ert")
  (depends-on "flycheck")
  (depends-on "flycheck-cask")
