@@ -113,7 +113,7 @@ display clickable buttons instead of just plain text using either
 
 If you want a buffer containing only a hierarchy while being able to
 navigate it with standard key-bindings use either
-~hierarchy-tabulated-display~ or ~hierarchy-convert-to-tree-widget~ as
+~hierarchy-tabulated-display~ or ~hierarchy-tree-display~ as
 shown in below animated pictures.
 
 #+BEGIN_SRC emacs-lisp :session animals :exports code
@@ -132,13 +132,10 @@ shown in below animated pictures.
 [[file:media/animals-tabulated-anime.gif]]
 
 #+BEGIN_SRC emacs-lisp :session animals :exports code
-  (let ((buffer (generate-new-buffer "hierarchy-animals")))
-    (switch-to-buffer buffer)
-    (widget-create
-     (hierarchy-convert-to-tree-widget
-      animals
-      (lambda (item _) (insert (symbol-name item)))))
-    (setq-local buffer-read-only t))
+  (switch-to-buffer
+   (hierarchy-tree-display
+    animals
+    (lambda (item _) (insert (symbol-name item)))))
 #+END_SRC
 
 #+RESULTS:

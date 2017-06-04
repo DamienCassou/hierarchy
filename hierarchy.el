@@ -525,6 +525,25 @@ button label."
                          :args children))
                       hierarchy))
 
+(defun hierarchy-tree-display (hierarchy labelfn &optional buffer)
+  "Display HIERARCHY as a tree widget in a new buffer.
+
+HIERARCHY and LABELFN are passed unchanged to
+`hierarchy-convert-to-tree-widget'.
+
+The tabulated list is displayed in BUFFER, or a newly created buffer if
+nil.  The buffer is returned."
+  (let ((buffer (or buffer (generate-new-buffer "*hierarchy-tree*")))
+        (tree-widget (hierarchy-convert-to-tree-widget hierarchy labelfn)))
+    (with-current-buffer buffer
+      (setq-local buffer-read-only t)
+      (let ((inhibit-read-only t))
+        (erase-buffer)
+        (widget-create tree-widget)
+        (goto-char (point-min))
+        (special-mode)))
+    buffer))
+
 (provide 'hierarchy)
 
 ;;; hierarchy.el ends here

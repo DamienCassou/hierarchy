@@ -73,16 +73,8 @@ _ is ignored."
 (defun hierarchy-examples-fs-display-filesystem-tree (&optional folder)
   "Display hierarchy of FOLDER in a tree widget."
   (require 'tree-widget)
-  (let* ((hierarchy (hierarchy-examples-fs-build-fs-hierarchy folder))
-         (tree-widget (hierarchy-convert-to-tree-widget
-                       hierarchy #'hierarchy-examples-fs-labelfn)))
-    (with-current-buffer (get-buffer-create "*hierarchy-examples-fs-tree*")
-      (setq-local buffer-read-only t)
-      (let ((inhibit-read-only t))
-        (erase-buffer)
-        (widget-create tree-widget)
-        (goto-char (point-min)))
-      (switch-to-buffer (current-buffer)))))
+  (let* ((hierarchy (hierarchy-examples-fs-build-fs-hierarchy folder)))
+    (switch-to-buffer (hierarchy-tree-display hierarchy #'hierarchy-examples-fs-labelfn))))
 
 ;; Execute one of the following lines to show the .emacd.d hierarchy
 ;; in either a tabulated list or a tree widget. This takes around 4
