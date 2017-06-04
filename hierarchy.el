@@ -497,7 +497,7 @@ table.
 
 The tabulated list is displayed in BUFFER, or a newly created buffer if
 nil.  The buffer is returned."
-  (let ((buffer (or buffer (generate-new-buffer "hierarchy-tabulated"))))
+  (let ((buffer (or buffer (generate-new-buffer "*hierarchy-tabulated*"))))
     (with-current-buffer buffer
       (hierarchy-tabulated-mode)
       (setq tabulated-list-format
