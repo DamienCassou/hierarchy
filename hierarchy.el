@@ -518,6 +518,7 @@ LABELFN is a function taking an item of HIERARCHY and an indentation
 value (a number) as parameter and returning a string to be displayed as a
 button label."
   (require 'wid-edit)
+  (require 'tree-widget)
   (hierarchy-map-tree (lambda (item indent children)
                         (widget-convert
                          'tree-widget
