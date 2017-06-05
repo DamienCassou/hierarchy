@@ -26,7 +26,7 @@
 (declare-function undercover "undercover")
 
 (when (require 'undercover nil t)
-  (undercover "hierarchy.el"))
+  (undercover "hierarchy.el" (:send-report nil)))
 
 (require 'hierarchy)
 
