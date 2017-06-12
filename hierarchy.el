@@ -173,8 +173,9 @@ anything, not necessarily a list."
          (unwrapfn (if wrap #'cdr #'identity)))
     (hierarchy-add-tree
      hierarchy (funcall wrapfn list) nil
-     (lambda (item) (mapcar wrapfn (funcall childrenfn
-                                            (funcall unwrapfn item)))))
+     (lambda (item)
+       (mapcar wrapfn (funcall childrenfn
+                               (funcall unwrapfn item)))))
     hierarchy))
 
 (defun hierarchy-sort (hierarchy &optional sortfn)
@@ -198,9 +199,10 @@ default, SORTFN is `string-lessp'."
     (let ((tree (hierarchy-new)))
       (hierarchy-add-tree tree item
                           (lambda (each) (hierarchy-parent hierarchy each))
-                          (lambda (each) (when (or (equal each item)
-                                              (hierarchy-descendant-p hierarchy each item))
-                                      (hierarchy-children hierarchy each))))
+                          (lambda (each)
+                            (when (or (equal each item)
+                                      (hierarchy-descendant-p hierarchy each item))
+                              (hierarchy-children hierarchy each))))
       tree)))
 
 (defun hierarchy-copy (hierarchy)
