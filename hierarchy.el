@@ -383,7 +383,11 @@ root if nil)."
                      (hierarchy-children hierarchy item)))))
 
 (defun hierarchy-map-hierarchy (function hierarchy)
-  "Apply FUNCTION to each item of HIERARCHY in a new hierarchy."
+  "Apply FUNCTION to each item of HIERARCHY in a new hierarchy.
+
+FUNCTION should take 2 parameters, the current item and its
+indentation level (a number), and should return an item to be
+added to the new hierarchy."
   (let* ((items (make-hash-table :test #'equal))
          (transform (lambda (item) (map-elt items item))))
     ;; Make 'items', a table mapping original items to their
