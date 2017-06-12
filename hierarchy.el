@@ -102,6 +102,17 @@ should be an item of the hierarchy."
       (push item (map-elt (hierarchy--children hierarchy) parent (list)))
       (map-put (hierarchy--parents hierarchy) item parent)))))
 
+(defun hierarchy--set-equal (list1 list2 &rest cl-keys)
+  "Return non-nil if LIST1 and LIST2 have same elements.
+
+I.e., if every element of LIST1 also appears in LIST2 and if
+every element of LIST2 also appears in LIST1.
+
+CL-KEYS are key-value pairs just like in `cl-subsetp'.  Supported
+keys are :key and :test."
+  (and (apply 'cl-subsetp list1 list2 cl-keys)
+       (apply 'cl-subsetp list2 list1 cl-keys)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Creation
@@ -291,17 +302,6 @@ and either:
    (or
     (hierarchy-child-p hierarchy item1 item2)
     (hierarchy-descendant-p hierarchy (hierarchy-parent hierarchy item1) item2))))
-
-(defun hierarchy--set-equal (list1 list2 &rest cl-keys)
-  "Return non-nil if LIST1 and LIST2 have same elements.
-
-I.e., if every element of LIST1 also appears in LIST2 and if
-every element of LIST2 also appears in LIST1.
-
-CL-KEYS are key-value pairs just like in `cl-subsetp'.  Supported
-keys are :key and :test."
-  (and (apply 'cl-subsetp list1 list2 cl-keys)
-       (apply 'cl-subsetp list2 list1 cl-keys)))
 
 (defun hierarchy-equal (hierarchy1 hierarchy2)
   "Return t if HIERARCHY1 and HIERARCHY2 are equal.
