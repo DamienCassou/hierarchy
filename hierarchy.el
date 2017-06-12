@@ -152,19 +152,18 @@ PARENTFN, CHILDRENFN and ACCEPTFN have the same meaning as in `hierarchy-add'."
              (hierarchy-add-tree hierarchy item parentfn childrenfn acceptfn))
            items))
 
-(defun hierarchy-from-list (list &optional wrap childrenfn)
-  "Create and return a hierarchy built from LIST.
+(defun hierarchy-add-list (hierarchy list &optional wrap childrenfn)
+  "Add to HIERARCHY the sub-lists in LIST.
 
-If WRAP is non-nil, allow duplicate items in LIST by wraping
-each item in a cons (id . item).  The root's id is 1.
+If WRAP is non-nil, allow duplicate items in LIST by wraping each
+item in a cons (id . item).  The root's id is 1.
 
 CHILDRENFN is a function (defaults to `cdr') taking LIST as a
 parameter which should return LIST's children (a list).  Each
 child is (recursively) passed as a parameter to CHILDRENFN to get
 its own children.  Because of this parameter, LIST can be
 anything, not necessarily a list."
-  (let* ((hierarchy (hierarchy-new))
-         (childrenfn (or childrenfn #'cdr))
+  (let* ((childrenfn (or childrenfn #'cdr))
          (id 0)
          (wrapfn (lambda (item)
                    (if wrap
@@ -177,6 +176,13 @@ anything, not necessarily a list."
        (mapcar wrapfn (funcall childrenfn
                                (funcall unwrapfn item)))))
     hierarchy))
+
+(defun hierarchy-from-list (list &optional wrap childrenfn)
+  "Create and return a hierarchy built from LIST.
+
+This function passes LIST, WRAP and CHILDRENFN unchanged to
+`hierarchy-add-list'."
+  (hierarchy-add-list (hierarchy-new) list wrap childrenfn))
 
 (defun hierarchy-sort (hierarchy &optional sortfn)
   "Modify HIERARCHY so that its roots and item's children are sorted.
