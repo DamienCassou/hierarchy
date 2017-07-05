@@ -84,7 +84,7 @@
 SORTFN is a function taking two items of the hierarchy as parameter and
 returning non-nil if the first parameter is lower than the second."
   (setf (hierarchy--roots hierarchy)
-        (sort (hierarchy--roots hierarchy)
+        (sort (hierarchy--compute-roots hierarchy)
               sortfn)))
 
 (defun hierarchy--add-relation (hierarchy item parent acceptfn)
