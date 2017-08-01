@@ -12,7 +12,7 @@
 
 ** Summary
 
-Library to create, query, navigate and display hierarchy structures.
+Library to create, query, navigate and display hierarchy structures. You might want to read the [[https://emacs.cafe/emacs/guest-post/2017/06/26/hierarchy.html][introductory blog post]].
 
 ** Installing
 
