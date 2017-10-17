@@ -239,7 +239,7 @@
           (hierarchy (hierarchy-new)))
       (hierarchy-add-tree hierarchy 'bird parentfn)
       (expect
-       (lambda () (hierarchy--add-relation hierarchy 'bird 'cow #'identity))
+       (hierarchy--add-relation hierarchy 'bird 'cow #'identity)
        :to-throw)))
 
   (it "empty-p-return-non-nil-for-empty"
