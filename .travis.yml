@@ -3,19 +3,15 @@ sudo: false
 
 before_install:
   - curl -fsSkL https://gist.github.com/rejeep/ebcd57c3af83b049833b/raw > x.sh && source ./x.sh
+  # Fix cask (See https://github.com/cask/cask/issues/399#issuecomment-331640427)
+  - perl -ibak -lape 's{#!/usr/bin/env python}{#!/usr/bin/python}' "$(which cask)"
   - evm install $EVM_EMACS --use --skip
-  - cask
+  - cask emacs --version
+  - make deps
 
 env:
-  - EVM_EMACS=emacs-25.1-travis
   - EVM_EMACS=emacs-25.2-travis
-  - EVM_EMACS=emacs-git-snapshot-travis
-
-matrix:
-  fast_finish: true
-  allow_failures:
-    - env: EVM_EMACS=emacs-git-snapshot-travis
+  - EVM_EMACS=emacs-25.3-travis
 
 script:
-  - emacs --version
   - make check
