@@ -546,7 +546,7 @@ node label."
 HIERARCHY and LABELFN are passed unchanged to
 `hierarchy-convert-to-tree-widget'.
 
-The tabulated list is displayed in BUFFER, or a newly created buffer if
+The tree widget is displayed in BUFFER, or a newly created buffer if
 nil.  The buffer is returned."
   (let ((buffer (or buffer (generate-new-buffer "*hierarchy-tree*")))
         (tree-widget (hierarchy-convert-to-tree-widget hierarchy labelfn)))
