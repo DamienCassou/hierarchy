@@ -124,7 +124,7 @@
       (hierarchy-add-tree hierarchy 'dove parentfn)
       (hierarchy-add-tree hierarchy 'pigeon parentfn)
       (expect (hierarchy-roots hierarchy) :to-equal '(bird))
-      (expect (hierarchy-children hierarchy 'bird) :to-equal '(pigeon dove))))
+      (expect (hierarchy-children hierarchy 'bird) :to-equal '(dove pigeon))))
 
   (it "add-two-hierarchies"
     (let ((parentfn (lambda (item)
@@ -147,7 +147,7 @@
       (hierarchy-add-tree hierarchy 'animal nil childrenfn)
       (expect (hierarchy-roots hierarchy) :to-equal '(animal))
       (expect (hierarchy-children hierarchy 'animal) :to-equal '(bird))
-      (expect (hierarchy-children hierarchy 'bird) :to-equal '(pigeon dove))))
+      (expect (hierarchy-children hierarchy 'bird) :to-equal '(dove pigeon))))
 
   (it "add-with-parentfn-and-childrenfn"
     (let ((parentfn (lambda (item)
@@ -163,7 +163,7 @@
       (expect (hierarchy-roots hierarchy) :to-equal '(life-form))
       (expect (hierarchy-children hierarchy 'life-form) :to-equal '(animal))
       (expect (hierarchy-children hierarchy 'animal) :to-equal '(bird))
-      (expect (hierarchy-children hierarchy 'bird) :to-equal '(pigeon dove))
+      (expect (hierarchy-children hierarchy 'bird) :to-equal '(dove pigeon))
       (expect (hierarchy-children hierarchy 'pigeon) :to-equal '(ashy-wood-pigeon))))
 
   (it "add-twice-with-parentfn-and-childrenfn"
@@ -190,7 +190,7 @@
       (hierarchy-add-trees hierarchy '(dove pigeon) parentfn)
       (expect (hierarchy-roots hierarchy) :to-equal '(animal))
       (expect (hierarchy-children hierarchy 'animal) :to-equal '(bird))
-      (expect (hierarchy-children hierarchy 'bird) :to-equal '(pigeon dove))))
+      (expect (hierarchy-children hierarchy 'bird) :to-equal '(dove pigeon))))
 
   (it "from-list"
     (let ((hierarchy (hierarchy-from-list
