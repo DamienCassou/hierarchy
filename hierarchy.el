@@ -101,7 +101,8 @@ should be an item of the hierarchy."
       (error "An item (%s) can only have one parent: '%s' vs '%s'"
              item existing-parent parent))
      ((not has-parent-p)
-      (push item (map-elt (hierarchy--children hierarchy) parent (list)))
+      (let ((existing-children (map-elt (hierarchy--children hierarchy) parent (list))))
+        (map-put (hierarchy--children hierarchy) parent (append existing-children (list item))))
       (map-put (hierarchy--parents hierarchy) item parent)))))
 
 (defun hierarchy--set-equal (list1 list2 &rest cl-keys)
