@@ -152,12 +152,15 @@ if its parameter is non-nil."
         (when (funcall acceptfn parent)
           (hierarchy--add-relation hierarchy item parent acceptfn)
           (hierarchy-add-tree hierarchy parent parentfn childrenfn)))
-      (let ((children (and childrenfn (funcall childrenfn item))))
-        (mapc (lambda (child)
-                (when (funcall acceptfn child)
-                  (hierarchy--add-relation hierarchy child item acceptfn)
-                  (hierarchy-add-tree hierarchy child parentfn childrenfn)))
-              children)))))
+      (if delay-children-p
+          (map-put (hierarchy--delaying-parents hierarchy) item childrenfn)
+        (let ((children (and childrenfn (funcall childrenfn item))))
+          (map-put (hierarchy--delaying-parents hierarchy) item nil)
+          (mapc (lambda (child)
+                  (when (funcall acceptfn child)
+                    (hierarchy--add-relation hierarchy child item acceptfn)
+                    (hierarchy-add-tree hierarchy child parentfn childrenfn)))
+                children))))))
 
 (defun hierarchy-add-trees (hierarchy items parentfn &optional childrenfn acceptfn delay-children-p)
   "Call `hierarchy-add-tree' on HIERARCHY and each element of ITEMS.
