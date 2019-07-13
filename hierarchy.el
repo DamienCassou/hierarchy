@@ -563,11 +563,20 @@ value (a number) as parameter and inserting a string to be displayed as a
 node label."
   (require 'wid-edit)
   (require 'tree-widget)
-                        (widget-convert
-                         'tree-widget
-                         :tag (hierarchy-labelfn-to-string labelfn item indent)
-                         :args children))
   (hierarchy-map-tree (lambda (item indent childrenfn children)
+                        (if childrenfn
+                            (widget-convert
+                             'tree-widget
+                             :tag (hierarchy-labelfn-to-string labelfn item indent)
+                             :expander (hierarchy--create-delayed-tree-widget
+                                        item
+                                        labelfn
+                                        (1+ indent)
+                                        childrenfn))
+                          (widget-convert
+                           'tree-widget
+                           :tag (hierarchy-labelfn-to-string labelfn item indent)
+                           :args children)))
                       hierarchy))
 
 (defun hierarchy-tree-display (hierarchy labelfn &optional buffer)
