@@ -392,7 +392,7 @@
 
   (it "map-tree"
     (let ((animals (hierarchy-test-animal)))
-      (expect (hierarchy-map-tree (lambda (item indent children)
+      (expect (hierarchy-map-tree (lambda (item indent childrenfn children)
                                     (list item indent children))
                                   animals) :to-equal
                                   '(animal
