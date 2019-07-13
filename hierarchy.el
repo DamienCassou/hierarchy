@@ -159,12 +159,12 @@ if its parameter is non-nil."
                   (hierarchy-add-tree hierarchy child parentfn childrenfn)))
               children)))))
 
-(defun hierarchy-add-trees (hierarchy items parentfn &optional childrenfn acceptfn)
+(defun hierarchy-add-trees (hierarchy items parentfn &optional childrenfn acceptfn delay-children-p)
   "Call `hierarchy-add-tree' on HIERARCHY and each element of ITEMS.
 
 PARENTFN, CHILDRENFN and ACCEPTFN have the same meaning as in `hierarchy-add'."
   (seq-map (lambda (item)
-             (hierarchy-add-tree hierarchy item parentfn childrenfn acceptfn))
+             (hierarchy-add-tree hierarchy item parentfn childrenfn acceptfn delay-children-p))
            items))
 
 (defun hierarchy-add-list (hierarchy list &optional wrap childrenfn)
