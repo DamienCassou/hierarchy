@@ -126,7 +126,7 @@ keys are :key and :test."
   "Create a hierarchy and return it."
   (hierarchy--make))
 
-(defun hierarchy-add-tree (hierarchy item parentfn &optional childrenfn acceptfn)
+(defun hierarchy-add-tree (hierarchy item parentfn &optional childrenfn acceptfn delay-children-p)
   "In HIERARCHY, add ITEM.
 
 PARENTFN is either nil or a function defining the child-to-parent
