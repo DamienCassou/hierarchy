@@ -144,8 +144,6 @@ shown in below animated pictures.
 [[file:media/animals-tree-anime.gif]]
 
 ** Examples
-This library can be used to manipulate any kind of hierarchy. The
-following demonstrates this claim.
 *** File-system example
 The hierarchy library can be used to display any kind of hierarchy you
 need. For example, a [[file:examples/hierarchy-examples-fs.el][file-system navigator]] is provided as an example.
@@ -168,7 +166,13 @@ need. For example, a [[file:examples/hierarchy-examples-fs.el][file-system navig
 [[file:media/files-tabulated-anime.gif]]
 
 [[file:media/files-tree-anime.gif]]
+*** Faces hierarchy example
+Emacs and packages define quite a lot of faces. Because a face may
+inherit from another one, we can get [[file:examples/hierarchy-examples-faces.el][a hierarchy of them]]:
 
+[[file:media/faces-tree.png]]
+
+This is based on an [[https://github.com/DamienCassou/hierarchy/issues/74][idea and code from Yuan Fu]].
 *** Class hierarchy example
 With a bit more work, the hierarchy library can also be used to
 display class hierarchies (as I am currently experimenting in [[https://github.com/DamienCassou/klassified.el][this
