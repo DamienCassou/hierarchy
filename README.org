@@ -173,6 +173,12 @@ inherit from another one, we can get [[file:examples/hierarchy-examples-faces.el
 [[file:media/faces-tree.png]]
 
 This is based on an [[https://github.com/DamienCassou/hierarchy/issues/74][idea and code from Yuan Fu]].
+*** Major modes hierarchy example
+Emacs and packages define quite a lot of major modes. A major mode
+usually derives from another one which means we can get a [[file:examples/hierarchy-examples-major-modes.el][hierarchy of
+major modes]]:
+
+[[file:media/major-modes-tabulated.png]]
 *** Class hierarchy example
 With a bit more work, the hierarchy library can also be used to
 display class hierarchies (as I am currently experimenting in [[https://github.com/DamienCassou/klassified.el][this
