@@ -144,7 +144,12 @@ CHILDRENFN are expected to be coherent with each other.
 
 ACCEPTFN is a function returning non-nil if its parameter (any object)
 should be an item of the hierarchy.  By default, ACCEPTFN returns non-nil
-if its parameter is non-nil."
+if its parameter is non-nil.
+
+DELAY-CHILDREN-P is a predicate determining whether the children that would
+normally be processed by CHILDRENFN should, instead, have their processing be
+delayed and stored to be processed by CHILDRENFN when the child is selected
+during use of the hierarchy."
   (unless (hierarchy-has-item hierarchy item)
     (let ((acceptfn (or acceptfn #'identity)))
       (hierarchy--seen-items-add hierarchy item)
