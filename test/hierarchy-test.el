@@ -353,6 +353,12 @@
     (let ((animals (hierarchy-test-animal)))
       (expect (hierarchy-equal animals (hierarchy-copy animals)) :to-be-truthy)))
 
+  (it "sort"
+    (let ((animals (hierarchy-test-animal)))
+      (expect (hierarchy-roots animals) :to-equal '(animal))
+      (expect (hierarchy-children animals 'animal) :to-equal '(bird cow dolphin))
+      (expect (hierarchy-children animals 'bird) :to-equal '(dove pigeon))))
+
   (it "map-item-on-leaf"
     (let* ((animals (hierarchy-test-animal))
            (result (hierarchy-map-item (lambda (item indent) (cons item indent))
@@ -543,28 +549,7 @@
            (contents (with-temp-buffer
                        (hierarchy-tabulated-display animals labelfn (current-buffer))
                        (buffer-substring-no-properties (point-min) (point-max)))))
-      (expect contents :to-equal "animal\nbird\ndove\npigeon\ncow\ndolphin\n")))
-
-  (describe "sorts"
-    (it "non-root nodes"
-      (let ((animals (hierarchy-test-animal)))
-        (expect (hierarchy-roots animals) :to-equal '(animal))
-        (expect (hierarchy-children animals 'animal) :to-equal '(bird cow dolphin))
-        (expect (hierarchy-children animals 'bird) :to-equal '(dove pigeon))))
-
-    (it "roots"
-      (let ((organisms (hierarchy-new))
-            (parentfn
-             (lambda (item)
-               (cl-case item
-                 (oak 'plant)
-                 (bird 'animal)))))
-        (hierarchy-add-tree organisms 'oak parentfn)
-        (hierarchy-add-tree organisms 'bird parentfn)
-
-        (hierarchy-sort organisms)
-
-        (expect (hierarchy-roots organisms) :to-equal '(animal plant))))))
+      (expect contents :to-equal "animal\nbird\ndove\npigeon\ncow\ndolphin\n"))))
 
 (provide 'hierarchy-test)
 ;;; hierarchy-test.el ends here
