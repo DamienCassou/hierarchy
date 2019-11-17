@@ -1,8 +1,13 @@
-;;; hierarchy-tests.el --- Tests for hierarchy.el
+;;; hierarchy-test.el --- Tests for hierarchy.el
 
 ;; Copyright (C) 2013 Damien Cassou
 
 ;; Author: Damien Cassou <damien@cassou.me>
+;; Maintainer: Damien Cassou <damien@cassou.me>
+;; Version: 0.7.0
+;; Package-Requires: ((emacs "25.1"))
+;; GIT: https://github.com/DamienCassou/hierarchy
+;; URL: https://github.com/DamienCassou/hierarchy
 
 ;; This file is not part of GNU Emacs.
 
@@ -562,5 +567,4 @@
         (expect (hierarchy-roots organisms) :to-equal '(animal plant))))))
 
 (provide 'hierarchy-test)
-
 ;;; hierarchy-test.el ends here
