@@ -9,10 +9,9 @@ doc/hierarchy.info
 
 # Packages
 elpa
-/.cask
 dist
 
 # Ecukes
-/features/project/.cask
 /features/project/test/*.el
 .ecukes-failing-scenarios
+/makel.mk
