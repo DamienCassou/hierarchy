@@ -330,12 +330,6 @@
   (let ((animals (test-helper-animals)))
     (should (hierarchy-equal animals (hierarchy-copy animals)))))
 
-(ert-deftest hierarchy-sort ()
-  (let ((animals (test-helper-animals)))
-    (should (equal (hierarchy-roots animals) '(animal)))
-    (should (equal (hierarchy-children animals 'animal) '(bird cow dolphin)))
-    (should (equal (hierarchy-children animals 'bird) '(dove pigeon)))))
-
 (ert-deftest hierarchy-map-item-on-leaf ()
   (let* ((animals (test-helper-animals))
          (result (hierarchy-map-item (lambda (item indent) (cons item indent))
@@ -530,6 +524,23 @@
                      (hierarchy-tabulated-display animals labelfn (current-buffer))
                      (buffer-substring-no-properties (point-min) (point-max)))))
     (should (equal contents "animal\nbird\ndove\npigeon\ncow\ndolphin\n"))))
+
+(ert-deftest hierarchy-sort-non-root-nodes ()
+  (let* ((animals (test-helper-animals)))
+    (should (equal (hierarchy-roots animals) '(animal)))
+    (should (equal (hierarchy-children animals 'animal) '(bird cow dolphin)))
+    (should (equal (hierarchy-children animals 'bird) '(dove pigeon)))))
+
+(ert-deftest hierarchy-sort-roots ()
+  (let* ((organisms (hierarchy-new))
+         (parentfn (lambda (item)
+                     (cl-case item
+                       (oak 'plant)
+                       (bird 'animal)))))
+    (hierarchy-add-tree organisms 'oak parentfn)
+    (hierarchy-add-tree organisms 'bird parentfn)
+    (hierarchy-sort organisms)
+    (should (equal (hierarchy-roots organisms) '(animal plant)))))
 
 (provide 'hierarchy-test)
 ;;; hierarchy-test.el ends here
