@@ -107,7 +107,7 @@
     (hierarchy-add-tree hierarchy 'dove parentfn)
     (hierarchy-add-tree hierarchy 'pigeon parentfn)
     (should (equal (hierarchy-roots hierarchy) '(bird)))
-    (should (equal (hierarchy-children hierarchy 'bird) '(pigeon dove)))))
+    (should (equal (hierarchy-children hierarchy 'bird) '(dove pigeon)))))
 
 (ert-deftest hierarchy-add-two-hierarchies ()
   (let ((parentfn (lambda (item)
@@ -130,7 +130,7 @@
     (hierarchy-add-tree hierarchy 'animal nil childrenfn)
     (should (equal (hierarchy-roots hierarchy) '(animal)))
     (should (equal (hierarchy-children hierarchy 'animal) '(bird)))
-    (should (equal (hierarchy-children hierarchy 'bird) '(pigeon dove)))))
+    (should (equal (hierarchy-children hierarchy 'bird) '(dove pigeon)))))
 
 (ert-deftest hierarchy-add-with-parentfn-and-childrenfn ()
   (let ((parentfn (lambda (item)
@@ -146,7 +146,7 @@
     (should (equal (hierarchy-roots hierarchy) '(life-form)))
     (should (equal (hierarchy-children hierarchy 'life-form) '(animal)))
     (should (equal (hierarchy-children hierarchy 'animal) '(bird)))
-    (should (equal (hierarchy-children hierarchy 'bird) '(pigeon dove)))
+    (should (equal (hierarchy-children hierarchy 'bird) '(dove pigeon)))
     (should (equal (hierarchy-children hierarchy 'pigeon) '(ashy-wood-pigeon)))))
 
 (ert-deftest hierarchy-add-twice-with-parentfn-and-childrenfn ()
@@ -173,7 +173,7 @@
     (hierarchy-add-trees hierarchy '(dove pigeon) parentfn)
     (should (equal (hierarchy-roots hierarchy) '(animal)))
     (should (equal (hierarchy-children hierarchy 'animal) '(bird)))
-    (should (equal (hierarchy-children hierarchy 'bird) '(pigeon dove)))))
+    (should (equal (hierarchy-children hierarchy 'bird) '(dove pigeon)))))
 
 (ert-deftest hierarchy-from-list ()
   (let ((hierarchy (hierarchy-from-list
