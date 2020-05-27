@@ -66,7 +66,7 @@
   (roots (list)) ; list of the hierarchy roots (no parent)
   (parents (make-hash-table :test 'equal)) ; map an item to its parent
   (children (make-hash-table :test 'equal)) ; map an item to its children
-  (delaying-parents (make-hash-table :test 'equal)) ; map an item to
+  (delaying-parents (make-hash-table :test 'equal)) ; map an item to its childrenfn
   ;; cache containing the set of all items in the hierarchy
   (seen-items (make-hash-table :test 'equal)))  ; map an item to t
 
