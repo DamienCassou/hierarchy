@@ -389,7 +389,7 @@ This function returns the result of applying FUNCTION to ITEM (the first
 root if nil)."
   (let ((item (or item (car (hierarchy-roots hierarchy))))
         (indent (or indent 0)))
-    (funcall function item indent (map-elt (hierarchy--delaying-parents hierarchy) item)
+    (funcall function item indent
              (mapcar (lambda (child)
                        (hierarchy-map-tree function hierarchy child (1+ indent)))
                      (hierarchy-children hierarchy item)))))
@@ -568,20 +568,23 @@ value (a number) as parameter and inserting a string to be displayed as a
 node label."
   (require 'wid-edit)
   (require 'tree-widget)
-  (hierarchy-map-tree (lambda (item indent childrenfn children)
-                        (if childrenfn
+  (hierarchy-map-tree (lambda (item indent children)
+                        (let ((childrenfn (map-elt
+                                           (hierarchy--delaying-parents hierarchy)
+                                           item)))
+                          (if childrenfn
+                              (widget-convert
+                               'tree-widget
+                               :tag (hierarchy-labelfn-to-string labelfn item indent)
+                               :expander (hierarchy--create-delayed-tree-widget
+                                          item
+                                          labelfn
+                                          (1+ indent)
+                                          childrenfn))
                             (widget-convert
                              'tree-widget
                              :tag (hierarchy-labelfn-to-string labelfn item indent)
-                             :expander (hierarchy--create-delayed-tree-widget
-                                        item
-                                        labelfn
-                                        (1+ indent)
-                                        childrenfn))
-                          (widget-convert
-                           'tree-widget
-                           :tag (hierarchy-labelfn-to-string labelfn item indent)
-                           :args children)))
+                             :args children))))
                       hierarchy))
 
 (defun hierarchy-tree-display (hierarchy labelfn &optional buffer)
