@@ -537,12 +537,11 @@ nil.  The buffer is returned."
 
 (declare-function widget-convert "wid-edit")
 (defun hierarchy--create-delayed-tree-widget (elem labelfn indent fn)
-  "Return a list of tree-widgets for a hierarchy created from the children
-function.
+  "Return a list of tree-widgets for a hierarchy created from the childrenfn.
 
 ELEM is the element of the hierarchy passed from
-`hierarchy-convert-to-tree-widget'; it and FN (the children function) are used
-to generate the children of the ELEM dynamically.
+`hierarchy-convert-to-tree-widget'; it and the children function are used
+to generate the children of the element dynamically.
 
 LABELFN is the same function passed to `hierarchy-convert-to-tree-widget'.
 
