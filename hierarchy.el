@@ -537,7 +537,7 @@ nil.  The buffer is returned."
 
 (declare-function widget-convert "wid-edit")
 (defun hierarchy--create-delayed-tree-widget (elem labelfn indent fn)
-  "Return a list of tree-widgets for HIERARCHY created from the children
+  "Return a list of tree-widgets for a hierarchy created from the children
 function.
 
 ELEM is the element of the hierarchy passed from
