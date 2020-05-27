@@ -170,7 +170,8 @@ during use of the hierarchy."
 (defun hierarchy-add-trees (hierarchy items parentfn &optional childrenfn acceptfn delay-children-p)
   "Call `hierarchy-add-tree' on HIERARCHY and each element of ITEMS.
 
-PARENTFN, CHILDRENFN and ACCEPTFN have the same meaning as in `hierarchy-add'."
+PARENTFN, CHILDRENFN, ACCEPTFN, and DELAY-CHILDREN-P have the same meaning as in
+`hierarchy-add'."
   (seq-map (lambda (item)
              (hierarchy-add-tree hierarchy item parentfn childrenfn acceptfn delay-children-p))
            items))
@@ -536,7 +537,8 @@ nil.  The buffer is returned."
 
 (declare-function widget-convert "wid-edit")
 (defun hierarchy--create-delayed-tree-widget (elem labelfn indent fn)
-  "Return a list of tree-widgets for HIERARCHY created from the children function.
+  "Return a list of tree-widgets for HIERARCHY created from the children
+function.
 
 ELEM is the element of the hierarchy passed from
 `hierarchy-convert-to-tree-widget'; it and FN (the children function) are used
