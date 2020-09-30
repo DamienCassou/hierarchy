@@ -71,7 +71,7 @@
 
 (defun hierarchy--seen-items-add (hierarchy item)
   "In HIERARCHY, add ITEM to seen items."
-  (map-put (hierarchy--seen-items hierarchy) item t))
+  (map-put! (hierarchy--seen-items hierarchy) item t))
 
 (defun hierarchy--compute-roots (hierarchy)
   "Search roots of HIERARCHY and return them."
@@ -102,8 +102,8 @@ should be an item of the hierarchy."
              item existing-parent parent))
      ((not has-parent-p)
       (let ((existing-children (map-elt (hierarchy--children hierarchy) parent (list))))
-        (map-put (hierarchy--children hierarchy) parent (append existing-children (list item))))
-      (map-put (hierarchy--parents hierarchy) item parent)))))
+        (map-put! (hierarchy--children hierarchy) parent (append existing-children (list item))))
+      (map-put! (hierarchy--parents hierarchy) item parent)))))
 
 (defun hierarchy--set-equal (list1 list2 &rest cl-keys)
   "Return non-nil if LIST1 and LIST2 have same elements.
@@ -396,27 +396,27 @@ added to the new hierarchy."
     ;; Make 'items', a table mapping original items to their
     ;; transformation
     (hierarchy-map (lambda (item indent)
-                     (map-put items item (funcall function item indent)))
+                     (map-put! items item (funcall function item indent)))
                    hierarchy)
     (hierarchy--make
      :roots (mapcar transform (hierarchy-roots hierarchy))
      :parents (let ((result (make-hash-table :test #'equal)))
                 (map-apply (lambda (child parent)
-                             (map-put result
+                             (map-put! result
                                       (funcall transform child)
                                       (funcall transform parent)))
                            (hierarchy--parents hierarchy))
                 result)
      :children (let ((result (make-hash-table :test #'equal)))
                  (map-apply (lambda (parent children)
-                              (map-put result
+                              (map-put! result
                                        (funcall transform parent)
                                        (seq-map transform children)))
                             (hierarchy--children hierarchy))
                  result)
      :seen-items (let ((result (make-hash-table :test #'equal)))
                    (map-apply (lambda (item v)
-                                (map-put result
+                                (map-put! result
                                          (funcall transform item)
                                          v))
                               (hierarchy--seen-items hierarchy))
