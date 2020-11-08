@@ -1,3 +1,9 @@
+* ⚠ Integration into Emas core
+
+This project got integrated into Emacs core after the release of Emacs
+27.1. Please contribute patches to Emacs core directly instead of
+here.
+
 * Hierarchy
   #+BEGIN_HTML
       <p>
